@@ -1,0 +1,17 @@
+# This file will dictate the syntax for the paragraph body
+
+# The start and the end of tags in the <P> html tag
+start_esc = < 
+end_esc = >
+
+# Quick definition of class
+start_class = (
+end_class = )
+
+# Quick definition of ID
+start_id = |
+end_id = |
+
+# Quick definition of style
+start_style = :
+end_style = :
