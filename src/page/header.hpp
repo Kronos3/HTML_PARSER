@@ -33,18 +33,18 @@ using namespace std;
 
 class header
 {
-    public:
-    
-    string source_file;
-    vector < string > &link_files;
-    vector < string > content;
-    
-    void init ( string _source_file, vector < string > &_link_files )
-    {
-        source_file = _source_file;
-        link_files = _link_files;
-        content = File ( _source_file ).readlines ( );
-    }
+	public:
+	
+	string source_file;
+	vector < string > &link_files;
+	vector < string > content;
+	
+	void init ( string _source_file, vector < string > &_link_files )
+	{
+		source_file = _source_file;
+		link_files = _link_files;
+		content = File ( _source_file ).readlines ( );
+	}
 };
 
-#endif;
+#endif

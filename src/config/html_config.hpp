@@ -34,8 +34,8 @@
 
 using namespace std;
 
-class __HTML_CONFIG__
-	{
+class HTML_CONFIG
+{
 	public:
 	
 	string file;
@@ -71,26 +71,26 @@ class __HTML_CONFIG__
 		
 		for ( size_t i = 0; i != content.size ( ); i++ )
 		{
-        	string curr ( content [ i ] );
+			string curr ( content [ i ] );
 			if ( curr [ 0 ] == '#' )
 			{
 				continue;
 			}
 			
-			vector < string > __temp__ ( misc::split ( curr, '=' true ) );
+			vector < string > __temp__ ( misc::split ( curr, '=', true ) );
 			
 			variables [ __temp__ [ 0 ] ] = __temp__ [ 1 ];
-			var_list.push_back ( __temp__[0] );
-			val_list.push_back ( __temp__[1] );
+			var_list.push_back ( __temp__ [ 0 ] );
+			val_list.push_back ( __temp__ [ 1 ] );
 			
 			if ( __temp__ [ 1 ].find ( ',' ) != string::npos )
 			{
 				output_files = misc::split ( __temp__[1], ',', true );
 			}
-			else if ( __temp__.length ( ) <= 1 )
+			else if ( __temp__[ 1 ].length ( ) <= 1 )
 			{
-				char BUFF = __temp__[0];
-				char_variables [ __temp__[0] ] = BUFF;
+				char BUFF = __temp__ [ 1 ] [ 0 ];
+				char_variables [ __temp__ [ 0 ] ] = BUFF;
 			}
 		}
 	}
@@ -100,7 +100,6 @@ class __HTML_CONFIG__
 
 #ifndef __HTML_ST_SIG__
 #define __HTML_ST_SIG__
-
 
 // Use struct to conserve memory.
 typedef struct
@@ -139,16 +138,16 @@ typedef struct
 #define __HTML_SIG__
 
 
-class __HTML_SIG__
+class HTML_SIG
 {
 	public:
-	__HTML_CONFIG__ CONFIG;
+	HTML_CONFIG CONFIG;
 	vector < string > file;
 	vector < SIGNAL > SIGNALS;
 	vector < string > sig_types;
 	vector < vector < int > > line_start_end;
 	
-	void load ( __HTML_CONFIG__ _CONFIG, string _file )
+	void load ( HTML_CONFIG _CONFIG, string _file )
 	{
 		CONFIG = _CONFIG;
 		file = File ( _file ).readlines ( );
@@ -164,19 +163,19 @@ class __HTML_SIG__
 			for ( size_t j = 0; j != curr_line.length ( ); j++ )
 			{
 				char curr_char = curr_line [ j ];
-				if ( curr_char == CONFIG.variables["start_esc"] )
+				if ( curr_char == CONFIG.char_variables["start_esc"] )
 				{
 					esc = true;
-					TEMP_SIG_TOP.init ( i, "esc", _start=j );
+					TEMP_SIG_TOP.init ( i, "esc", j );
 					sig_types.push_back ( "esc" );
 					continue;
 				}
 				
-				if ( curr_char == CONFIG.variables["end_esc"] )
+				if ( curr_char == CONFIG.char_variables["end_esc"] )
 				{
 					esc = false;
 					
-					TEMP_SIG_TOP.init ( i, "esc", _end=j );
+					TEMP_SIG_TOP.end=j;
 					SIGNALS.push_back ( TEMP_SIG_TOP );
 					
 					TEMP_SIG_LINE.push_back ( i );
@@ -192,17 +191,17 @@ class __HTML_SIG__
 				
 				if ( esc )
 				{
-					if ( curr_char == CONFIG.variables["start_class"] )
+					if ( curr_char == CONFIG.char_variables["start_class"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "class", _start=j );
+						TEMP_SIG_BOTTOM.init ( i, "class", j );
 						sig_types.push_back ( "class" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_class"] )
+					if ( curr_char == CONFIG.char_variables["end_class"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "class", _end=j );
+						TEMP_SIG_BOTTOM.end=j;
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );
@@ -214,17 +213,17 @@ class __HTML_SIG__
 						TEMP_SIG_LINE.clear ( );
 					}
 					
-					if ( curr_char == CONFIG.variables["start_id"] )
+					if ( curr_char == CONFIG.char_variables["start_id"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "id", _start=j );
+						TEMP_SIG_BOTTOM.init ( i, "id", j );
 						sig_types.push_back ( "id" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_id"] )
+					if ( curr_char == CONFIG.char_variables["end_id"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "id", _end=j );
+						TEMP_SIG_BOTTOM.end=j;
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );
@@ -236,17 +235,17 @@ class __HTML_SIG__
 						TEMP_SIG_LINE.clear ( );
 					}
 					
-					if ( curr_char == CONFIG.variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["end_style"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "style", _start=j );
+						TEMP_SIG_BOTTOM.init ( i, "style", j );
 						sig_types.push_back ( "style" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["end_style"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "style", _end=j );
+						TEMP_SIG_BOTTOM.end=j;
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );

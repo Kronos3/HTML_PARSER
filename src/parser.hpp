@@ -38,7 +38,7 @@ using namespace std;
 
 class html_signal
 {
-    
-}
+	;
+};
 
 #endif
