@@ -101,12 +101,28 @@ class __HTML_CONFIG__
 #ifndef __HTML_ST_SIG__
 #define __HTML_ST_SIG__
 
+
+// Use struct to conserve memory.
 typedef struct
 {
 	int line_number;
 	string sig_type;
 	int start;
 	int end;
+	
+	void init ( int _line_number, string _sig_type, int _start = -1, int _end = -1 )
+	{
+		line_number = _line_number;
+		sig_type = _sig_type;
+		if ( _start != -1 )
+		{
+			start = _start;
+		}
+		if ( _end != -1 )
+		{
+			end = _end;
+		}
+	}
 	
 	void clear ( )
 	{
@@ -129,6 +145,8 @@ class __HTML_SIG__
 	__HTML_CONFIG__ CONFIG;
 	vector < string > file;
 	vector < SIGNAL > SIGNALS;
+	vector < string > sig_types;
+	vector < vector < int > > line_start_end;
 	
 	void load ( __HTML_CONFIG__ _CONFIG, string _file )
 	{
@@ -137,23 +155,41 @@ class __HTML_SIG__
 		for ( size_t i = 0; i != file.size ( ); i++ )
 		{
 			string curr_line ( file [ i ] );
+			
 			bool esc;
-			SIGNAL TEMP_SIG;
+			SIGNAL TEMP_SIG_TOP;
+			SIGNAL TEMP_SIG_BOTTOM;
+			vector < int > TEMP_SIG_LINE;
+			
 			for ( size_t j = 0; j != curr_line.length ( ); j++ )
 			{
 				char curr_char = curr_line [ j ];
 				if ( curr_char == CONFIG.variables["start_esc"] )
 				{
 					esc = true;
+					TEMP_SIG_TOP.init ( i, "esc", _start=j );
+					sig_types.push_back ( "esc" );
 					continue;
 				}
 				
 				if ( curr_char == CONFIG.variables["end_esc"] )
 				{
 					esc = false;
+					
+					TEMP_SIG_TOP.init ( i, "esc", _end=j );
+					SIGNALS.push_back ( TEMP_SIG_TOP );
+					
+					TEMP_SIG_LINE.push_back ( i );
+					TEMP_SIG_LINE.push_back ( TEMP_SIG_TOP.start );
+					TEMP_SIG_LINE.push_back ( TEMP_SIG_TOP.end );
+					
+					line_start_end.push_back ( TEMP_SIG_LINE );
+					
 					continue;
 				}
 				
-				if ( !esc )
+				if ( esc )
 				{
-					
+					if ( curr_char == CONFIG.variables["start_class"] )
+					{
+						TEMP_SIG_BOTTOM
