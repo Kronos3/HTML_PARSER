@@ -185,6 +185,8 @@ class __HTML_SIG__
 					
 					line_start_end.push_back ( TEMP_SIG_LINE );
 					
+					TEMP_SIG_LINE.clear ( );
+					
 					continue;
 				}
 				
@@ -192,4 +194,73 @@ class __HTML_SIG__
 				{
 					if ( curr_char == CONFIG.variables["start_class"] )
 					{
-						TEMP_SIG_BOTTOM
+						TEMP_SIG_BOTTOM.clear ( );
+						TEMP_SIG_BOTTOM.init ( i, "class", _start=j );
+						sig_types.push_back ( "class" );
+						continue;
+					}
+					
+					if ( curr_char == CONFIG.variables["end_class"] )
+					{
+						TEMP_SIG_BOTTOM.init ( i, "class", _end=j );
+						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
+						
+						TEMP_SIG_LINE.push_back ( i );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.start );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.end );
+						
+						line_start_end.push_back ( TEMP_SIG_LINE );
+						
+						TEMP_SIG_LINE.clear ( );
+					}
+					
+					if ( curr_char == CONFIG.variables["start_id"] )
+					{
+						TEMP_SIG_BOTTOM.clear ( );
+						TEMP_SIG_BOTTOM.init ( i, "id", _start=j );
+						sig_types.push_back ( "id" );
+						continue;
+					}
+					
+					if ( curr_char == CONFIG.variables["end_id"] )
+					{
+						TEMP_SIG_BOTTOM.init ( i, "id", _end=j );
+						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
+						
+						TEMP_SIG_LINE.push_back ( i );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.start );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.end );
+						
+						line_start_end.push_back ( TEMP_SIG_LINE );
+						
+						TEMP_SIG_LINE.clear ( );
+					}
+					
+					if ( curr_char == CONFIG.variables["end_style"] )
+					{
+						TEMP_SIG_BOTTOM.clear ( );
+						TEMP_SIG_BOTTOM.init ( i, "style", _start=j );
+						sig_types.push_back ( "style" );
+						continue;
+					}
+					
+					if ( curr_char == CONFIG.variables["end_style"] )
+					{
+						TEMP_SIG_BOTTOM.init ( i, "style", _end=j );
+						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
+						
+						TEMP_SIG_LINE.push_back ( i );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.start );
+						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.end );
+						
+						line_start_end.push_back ( TEMP_SIG_LINE );
+						
+						TEMP_SIG_LINE.clear ( );
+					}
+				}
+			}
+		}
+	}
+};
+
+#endif
