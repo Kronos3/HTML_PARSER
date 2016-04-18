@@ -15,3 +15,8 @@ end_id = |
 # Quick definition of style
 start_style = :
 end_style = :
+
+# Ignore the next special char
+esc = \
+
+output_files = index.html,page1.html

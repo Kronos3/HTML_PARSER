@@ -40,3 +40,5 @@ class html_signal
 {
     
 }
+
+#endif

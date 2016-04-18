@@ -27,11 +27,17 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../config/html_config.hpp"
 
 using namespace std;
 
 class body
 {
     public:
+    __HTML_CONFIG__ config;
+    vector < string > main_body_in;
+    vector < string > main_body_out;
     
 };
+
+#endif
