@@ -33,11 +33,10 @@ using namespace std;
 
 class body
 {
-    public:
-    __HTML_CONFIG__ config;
-    vector < string > main_body_in;
-    vector < string > main_body_out;
-    
+	public:
+	HTML_CONFIG config;
+	vector < string > main_body_in;
+	vector < string > main_body_out;
 };
 
 #endif
