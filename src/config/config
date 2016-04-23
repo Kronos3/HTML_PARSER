@@ -1,6 +1,6 @@
 # This file will dictate the syntax for the paragraph body
 
-# The start and the end of tags in the <P> html tag
+# Escape typical
 start_esc = < 
 end_esc = >
 
@@ -19,4 +19,10 @@ end_style = :
 # Ignore the next special char
 esc = \
 
+# The main files of the website
 output_files = index.html,page1.html
+
+# CSS and JSS files included as dependencies
+# All will read as string vectors
+css = css/style.css,css/bootstrap.css
+js= js/main.js

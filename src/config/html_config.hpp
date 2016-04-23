@@ -46,23 +46,12 @@ class __HTML_CONFIG__
 	map < string, string > variables;
 	map < string, char > char_variables;
 	
+	map < string, vector < string > > vector_vars;
+	
 	vector < string > output_files;
+	vector < string > css_files;
+	vector < string > js_files;
 	
-	/*
-	char start_esc;
-	char end_esc;
-	
-	char esc;
-	
-	char start_class;
-	char end_class;
-	
-	char start_id;
-	char end_id;
-	
-	char start_style;
-	char end_style;
-	*/
 	
 	void load ( string _file )
 	{
@@ -85,9 +74,11 @@ class __HTML_CONFIG__
 			
 			if ( __temp__ [ 1 ].find ( ',' ) != string::npos )
 			{
-				output_files = misc::split ( __temp__[1], ',', true );
+				vector < string > buff_vec misc::split ( __temp__[1], ',', true );
+				vector_vars [ __temp__ [ 0 ] ]  = buff_vec;
 			}
-			else if ( __temp__.length ( ) <= 1 )
+			
+			if ( __temp__.length ( ) <= 1 )
 			{
 				char BUFF = __temp__[0];
 				char_variables [ __temp__[0] ] = BUFF;
@@ -164,6 +155,13 @@ class __HTML_SIG__
 			for ( size_t j = 0; j != curr_line.length ( ); j++ )
 			{
 				char curr_char = curr_line [ j ];
+				if ( j != 0 )
+				{
+					if ( curr_line [ j - 1 ] == CONFIG.variables["esc"] )
+					{
+						continue;
+					}
+				}
 				if ( curr_char == CONFIG.variables["start_esc"] )
 				{
 					esc = true;
