@@ -1,5 +1,5 @@
 /*
- * body.hpp
+ * parser.cxx
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -20,33 +20,33 @@
  * 
  * 
  */
- 
-#ifndef __HTML_PARSER_BODY__
-#define __HTML_PARSER_BODY__
+
 
 #include <iostream>
-#include "signal_parser.hpp"
+#include "tools/Option.hpp"
+#include "page/body.hpp"
 
-using namespace std;
-
-class body
+int main(int argc, char *argv [])
 {
-	public:
-	vector < string > body_in;
-	vector < string > body_out;
+	string input;
 	
-	HTML_CONFIG config;
-	HTML_SIG sig;
-	signal_parser sig_parser;
-	
-	void init ( HTML_CONFIG _config, string file_in )
+	for ( int i = 0; i != argc; i++ )
 	{
-		config = _config;
-		body_in = File ( file_in ).readlines ( );
-		sig.load ( config, config.file );
-		sig_parser.parse ( sig );
-		body_out = sig_parser.output_file;
+		input += argv [ i ];
+		input += " ";
 	}
-};
+	
+	OptionSet parser_opts;
+	parser_opts.init ( "emerge", "Use the AutoGentoo portage API to install specified packages" );
+	
+	parser_opts.add_arg ( "OPTIONS" );
+	parser_opts.add_arg ( "CONFIG" );
+	
+	parser_opts.add_option ( "config", "src/config/config", "c", "string", "Specify the config file for parser" );
+	
+	parser_opts.create_help ( );
+	parser_opts.feed ( input );
+	
+	return 0;
+}
 
-#endif

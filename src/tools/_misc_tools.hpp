@@ -1,7 +1,7 @@
 /*
  * _misc_tools.hpp
  * 
- * Copyright 2016 Andrei Tumbar <atadmin@Helios>
+ * Copyright 2015 Andrei Tumbar <atadmin@Helios>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
  * 
  */
 
-#ifndef __HTML_PARSER_TOOLS__
-#define __HTML_PARSER_TOOLS__
+#ifndef __MISC_TOOLS_AUTOGENTOO__
+#define __MISC_TOOLS_AUTOGENTOO__
 
 #include <iostream>
 #include <string>
@@ -277,6 +277,22 @@ namespace misc
 		return val;
 	}
 	
+	bool stob ( std::string in )
+	{
+		boost::algorithm::to_lower ( in );
+		if ( in == "false" )
+		{
+			return false;
+		}
+		
+		if ( in == "true" )
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	std::string getOutput ( std::string command )
 	{
 		std::string cmd ( command + " > temp" );
@@ -332,8 +348,8 @@ namespace misc
 		return buffVec;
 	}
 	
-	template < class T >
-	bool in ( std::vector < T > VEC, T VAL )
+	template < class V, class T >
+	bool in ( V VEC, T VAL )
 	{
 		for ( size_t i; i != VEC.size ( ); i++ )
 		{
@@ -345,5 +361,16 @@ namespace misc
 		}
 		return false;
 	}
+	
+	/*std::string rreplace ( std::string in, std::string find, std::string replace )
+	{
+		std::string out;
+		for ( size_t i = 0; i != in.length ( ); i++ )
+		{
+			char c = in [ i ];
+			std::string buff;
+			buff += c;
+			if (
+	*/ 
 }
 #endif
