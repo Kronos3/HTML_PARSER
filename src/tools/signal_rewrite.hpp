@@ -22,8 +22,8 @@
  */
  
 
-#ifndef __HTML_MUTL_REPLACE__
-#define __HTML_MUTL_REPLACE__
+#ifndef __HTML_MULT_REPLACE__
+#define __HTML_MULT_REPLACE__
 
 #include <iostream>
 #include "../page/signal_parser.hpp"
