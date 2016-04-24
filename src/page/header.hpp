@@ -25,9 +25,7 @@
 #define __HTML_PARSER_HEADER__
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include "../tools/file.hpp"
+#include "
 
 using namespace std;
 
@@ -36,14 +34,22 @@ class header
 	public:
 	
 	string source_file;
-	vector < string > &link_files;
 	vector < string > content;
 	
-	void init ( string _source_file, vector < string > &_link_files )
+	vector < string > header_out;
+	
+	HTML_CONFIG config;
+	HTML_SIG sig;
+	signal_parser sig_parser;
+	
+	void init ( string _source_file )
 	{
 		source_file = _source_file;
-		link_files = _link_files;
 		content = File ( _source_file ).readlines ( );
+		
+		sig.load ( config, config.file );
+		sig_parser.parse ( sig );
+		body_out = sig_parser.output_file;
 	}
 };
 
