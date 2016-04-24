@@ -167,8 +167,14 @@ class HTML_SIG
 			string curr_line ( file [ i ] );
 			
 			bool esc;
+			
+			bool __class = false;
+			bool __style = false;
+			bool __id = false;
+			
 			SIGNAL TEMP_SIG_TOP;
 			SIGNAL TEMP_SIG_BOTTOM;
+			
 			vector < int > TEMP_SIG_LINE;
 			
 			for ( size_t j = 0; j != curr_line.length ( ); j++ )
@@ -209,15 +215,16 @@ class HTML_SIG
 				
 				if ( esc )
 				{
-					if ( curr_char == CONFIG.char_variables["start_class"] )
+					if ( curr_char == CONFIG.char_variables["start_class"] and !__class )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "class", j );
 						sig_types.push_back ( "class" );
+						__class = true;
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.char_variables["end_class"] )
+					if ( curr_char == CONFIG.char_variables["end_class"] and __class )
 					{
 						TEMP_SIG_BOTTOM.init_end ( i, "class", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
@@ -229,17 +236,20 @@ class HTML_SIG
 						line_start_end.push_back ( TEMP_SIG_LINE );
 						
 						TEMP_SIG_LINE.clear ( );
+						
+						__class = false;
 					}
 					
-					if ( curr_char == CONFIG.char_variables["start_id"] )
+					if ( curr_char == CONFIG.char_variables["start_id"] and !__id )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "id", j );
 						sig_types.push_back ( "id" );
+						__id = true;
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.char_variables["end_id"] )
+					if ( curr_char == CONFIG.char_variables["end_id"] and __id )
 					{
 						TEMP_SIG_BOTTOM.init_end ( i, "id", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
@@ -249,19 +259,21 @@ class HTML_SIG
 						TEMP_SIG_LINE.push_back ( TEMP_SIG_BOTTOM.end );
 						
 						line_start_end.push_back ( TEMP_SIG_LINE );
+						__id = false;
 						
 						TEMP_SIG_LINE.clear ( );
 					}
 					
-					if ( curr_char == CONFIG.char_variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["start_style"] and !__style )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "style", j );
 						sig_types.push_back ( "style" );
+						__style = true;
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.char_variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["end_style"] and __style )
 					{
 						TEMP_SIG_BOTTOM.init_end ( i, "style", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
@@ -272,6 +284,7 @@ class HTML_SIG
 						
 						line_start_end.push_back ( TEMP_SIG_LINE );
 						
+						__style = false;
 						TEMP_SIG_LINE.clear ( );
 					}
 				}

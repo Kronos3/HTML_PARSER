@@ -1,7 +1,7 @@
 # This file will dictate the syntax for the paragraph body
 
 # Escape typical
-start_esc = < 
+start_esc = <
 end_esc = >
 
 # Quick definition of class
@@ -17,6 +17,7 @@ start_style = :
 end_style = :
 
 # Ignore the next special char
+# DONT CHANGE THIS UNLESS YOU KNOW WHAT YOU DOING
 esc = \
 
 # The main files of the website
