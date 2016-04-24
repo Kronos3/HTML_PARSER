@@ -1,5 +1,5 @@
 /*
- * parser.hpp
+ * signal_parser.hpp
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -26,7 +26,9 @@
 #define __HTML_SIGNAL_PARSER__
 
 #include <iostream>
-#include "../tools/html_config.hpp"
+#include "../config/html_config.hpp"
+#include "signal_group.hpp"
+#include "../tools/signal_rewrite.hpp"
 
 using namespace std;
 
@@ -38,6 +40,10 @@ class signal_parser
 	
 	vector < SIGNAL > input_signals;
 	vector < string > output_string;
+	vector < int > str_len;
+	vector < int > sig_line_numbers;
+	
+	signal_group sig_group;
 	
 	void parse ( __HTML_SIG__ __input__, bool create_out_file = true )
 	{
@@ -47,21 +53,24 @@ class signal_parser
 		for ( size_t i = 0; i != input_signals; i++ )
 		{
 			SIGNAL curr = input_signals[ i ]; 
-			int str_len = curr.end - curr.start;
+			sig_line_numbers.push_back ( curr.line_number )
 			
 			if ( curr.sig_type == "esc" )
 			{
-				output_string.push_back ( input_file [ curr.line_number ].substr ( curr.start, str_len ) );
+				output_string.push_back ( input_file [ curr.line_number ].substr ( curr.start, curr.length ) );
 				continue;
 			}
 			
 			curr_output_str = curr.sig_type;
 			curr_output_str += "=\"";
-			curr_output_str += input_file [ curr.line_number ].substr ( curr.start, str_len );
+			curr_output_str += input_file [ curr.line_number ].substr ( curr.start, curr.length );
 			curr_output_str += "\"";
 			
 			output_string.push_back ( curr_output_str );
+			str_len.push_back ( curr_output_str.length ( ) );
 		}
+		
+		sig_group.init ( input_signals );
 	}
 	
 	void write_out ( )
@@ -69,7 +78,29 @@ class signal_parser
 		for ( size_t i = 0; i != output_string.size ( ); i++ )
 		{
 			string curr_str ( output_string [ i ] );
-			for ( 
+			int buff_i = static_cast < int > ( i );
+			
+			int find = misc::find < int > ( sig_line_numbers, buff_i )
+			
+			if ( find == -1 )
+			{
+				output_file.push_back ( curr_str );
+				continue;
+			}
+			
+			vector < SIGNAL > this_line = sig_group [ i ];
+			vector < int > out_line_nums = sig_group ( i );
+			vector < string > replacing;
+			
+			for ( vector < int >::iterator i = out_line_nums.begin ( ); i != out_line_nums.end ( ); i++ )
+			{
+				replacing.push_back ( output_string [ i ] );
+			}
+			
+			curr_str = mult_replace ( curr_str, replacing, this_line );
+			output_file.push_back ( curr_str );
+		}
+	}
 };
 
 #endif

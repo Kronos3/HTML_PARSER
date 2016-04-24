@@ -1,5 +1,5 @@
 /*
- * parser.hpp
+ * html_config.hpp
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -100,6 +100,7 @@ typedef struct
 	string sig_type;
 	int start;
 	int end;
+	int length;
 	
 	void init ( int _line_number, string _sig_type, int _start = -1, int _end = -1 )
 	{
@@ -112,6 +113,7 @@ typedef struct
 		if ( _end != -1 )
 		{
 			end = _end;
+			length = end - start;
 		}
 	}
 	
