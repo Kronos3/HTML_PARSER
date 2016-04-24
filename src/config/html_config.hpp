@@ -34,7 +34,7 @@
 
 using namespace std;
 
-class __HTML_CONFIG__
+class HTML_CONFIG
 	{
 	public:
 	
@@ -132,16 +132,16 @@ typedef struct
 #define __HTML_SIG__
 
 
-class __HTML_SIG__
+class HTML_SIG
 {
 	public:
-	__HTML_CONFIG__ CONFIG;
+	HTML_CONFIG CONFIG;
 	vector < string > file;
 	vector < SIGNAL > SIGNALS;
 	vector < string > sig_types;
 	vector < vector < int > > line_start_end;
 	
-	void load ( __HTML_CONFIG__ _CONFIG, string _file )
+	void load ( HTML_CONFIG _CONFIG, string _file )
 	{
 		CONFIG = _CONFIG;
 		file = File ( _file ).readlines ( );

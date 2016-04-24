@@ -25,9 +25,7 @@
 #define __HTML_PARSER_BODY__
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include "../config/html_config.hpp"
+#include "signal_parser.hpp"
 
 using namespace std;
 
@@ -35,8 +33,19 @@ class body
 {
 	public:
 	HTML_CONFIG config;
-	vector < string > main_body_in;
-	vector < string > main_body_out;
+	vector < string > body_in;
+	vector < string > body_out;
+	HTML_SIG sig
+	signal_parser sig_parser;
+	
+	void init ( HTML_CONFIG _config, vector < string > file_in )
+	{
+		config = _config;
+		body_in = file_in;
+		sig.load ( config, config.file );
+		sig_parser.parse ( sig );
+		body_out = sig_parser.output_file;
+	}
 };
 
 #endif

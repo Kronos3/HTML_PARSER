@@ -45,7 +45,7 @@ class signal_parser
 	
 	signal_group sig_group;
 	
-	void parse ( __HTML_SIG__ __input__, bool create_out_file = true )
+	void parse ( HTML_SIG __input__ )
 	{
 		input_file = __input__.file;
 		input_signals = __input__.SIGNALS;
