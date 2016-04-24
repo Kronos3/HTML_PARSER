@@ -50,10 +50,11 @@ class signal_parser
 		input_file = __input__.file;
 		input_signals = __input__.SIGNALS;
 		
-		for ( size_t i = 0; i != input_signals; i++ )
+		for ( size_t i = 0; i != input_signals.size ( ); i++ )
 		{
 			SIGNAL curr = input_signals[ i ]; 
-			sig_line_numbers.push_back ( curr.line_number )
+			string curr_output_str;
+			sig_line_numbers.push_back ( curr.line_number );
 			
 			if ( curr.sig_type == "esc" )
 			{
@@ -80,7 +81,7 @@ class signal_parser
 			string curr_str ( output_string [ i ] );
 			int buff_i = static_cast < int > ( i );
 			
-			int find = misc::find < int > ( sig_line_numbers, buff_i )
+			int find = misc::find < int > ( sig_line_numbers, buff_i );
 			
 			if ( find == -1 )
 			{
@@ -92,9 +93,9 @@ class signal_parser
 			vector < int > out_line_nums = sig_group ( i );
 			vector < string > replacing;
 			
-			for ( vector < int >::iterator i = out_line_nums.begin ( ); i != out_line_nums.end ( ); i++ )
+			for ( vector < int >::iterator j = out_line_nums.begin ( ); j != out_line_nums.end ( ); j++ )
 			{
-				replacing.push_back ( output_string [ i ] );
+				replacing.push_back ( output_string [ *j ] );
 			}
 			
 			curr_str = mult_replace ( curr_str, replacing, this_line );

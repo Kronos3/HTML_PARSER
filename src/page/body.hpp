@@ -35,7 +35,7 @@ class body
 	HTML_CONFIG config;
 	vector < string > body_in;
 	vector < string > body_out;
-	HTML_SIG sig
+	HTML_SIG sig;
 	signal_parser sig_parser;
 	
 	void init ( HTML_CONFIG _config, vector < string > file_in )

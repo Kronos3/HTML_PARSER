@@ -60,13 +60,13 @@ class HTML_CONFIG
 		
 		for ( size_t i = 0; i != content.size ( ); i++ )
 		{
-        	string curr ( content [ i ] );
+			string curr ( content [ i ] );
 			if ( curr [ 0 ] == '#' )
 			{
 				continue;
 			}
 			
-			vector < string > __temp__ ( misc::split ( curr, '=' true ) );
+			vector < string > __temp__ ( misc::split ( curr, '=', true ) );
 			
 			variables [ __temp__ [ 0 ] ] = __temp__ [ 1 ];
 			var_list.push_back ( __temp__[0] );
@@ -74,13 +74,13 @@ class HTML_CONFIG
 			
 			if ( __temp__ [ 1 ].find ( ',' ) != string::npos )
 			{
-				vector < string > buff_vec misc::split ( __temp__[1], ',', true );
-				vector_vars [ __temp__ [ 0 ] ]  = buff_vec;
+				vector < string > buff_vec ( misc::split ( __temp__[1], ',', true ) );
+				vector_vars [ __temp__ [ 0 ] ] = buff_vec;
 			}
 			
-			if ( __temp__.length ( ) <= 1 )
+			if ( __temp__ [ 1 ].length ( ) <= 1 )
 			{
-				char BUFF = __temp__[0];
+				char BUFF = __temp__ [ 1 ] [ 0 ];
 				char_variables [ __temp__[0] ] = BUFF;
 			}
 		}
@@ -102,8 +102,25 @@ typedef struct
 	int end;
 	int length;
 	
-	void init ( int _line_number, string _sig_type, int _start = -1, int _end = -1 )
+	void init_start ( int _line_number, string _sig_type, int _start )
 	{
+		int _end = -1;
+		line_number = _line_number;
+		sig_type = _sig_type;
+		if ( _start != -1 )
+		{
+			start = _start;
+		}
+		if ( _end != -1 )
+		{
+			end = _end;
+			length = end - start;
+		}
+	}
+	
+	void init_end ( int _line_number, string _sig_type, int _end )
+	{
+		int _start = -1;
 		line_number = _line_number;
 		sig_type = _sig_type;
 		if ( _start != -1 )
@@ -159,24 +176,24 @@ class HTML_SIG
 				char curr_char = curr_line [ j ];
 				if ( j != 0 )
 				{
-					if ( curr_line [ j - 1 ] == CONFIG.variables["esc"] )
+					if ( curr_line [ j - 1 ] == CONFIG.char_variables["esc"] )
 					{
 						continue;
 					}
 				}
-				if ( curr_char == CONFIG.variables["start_esc"] )
+				if ( curr_char == CONFIG.char_variables["start_esc"] )
 				{
 					esc = true;
-					TEMP_SIG_TOP.init ( i, "esc", _start=j );
+					TEMP_SIG_TOP.init_start ( i, "esc", j );
 					sig_types.push_back ( "esc" );
 					continue;
 				}
 				
-				if ( curr_char == CONFIG.variables["end_esc"] )
+				if ( curr_char == CONFIG.char_variables["end_esc"] )
 				{
 					esc = false;
 					
-					TEMP_SIG_TOP.init ( i, "esc", _end=j );
+					TEMP_SIG_TOP.init_end ( i, "esc", j );
 					SIGNALS.push_back ( TEMP_SIG_TOP );
 					
 					TEMP_SIG_LINE.push_back ( i );
@@ -192,17 +209,17 @@ class HTML_SIG
 				
 				if ( esc )
 				{
-					if ( curr_char == CONFIG.variables["start_class"] )
+					if ( curr_char == CONFIG.char_variables["start_class"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "class", _start=j );
+						TEMP_SIG_BOTTOM.init_start ( i, "class", j );
 						sig_types.push_back ( "class" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_class"] )
+					if ( curr_char == CONFIG.char_variables["end_class"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "class", _end=j );
+						TEMP_SIG_BOTTOM.init_end ( i, "class", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );
@@ -214,17 +231,17 @@ class HTML_SIG
 						TEMP_SIG_LINE.clear ( );
 					}
 					
-					if ( curr_char == CONFIG.variables["start_id"] )
+					if ( curr_char == CONFIG.char_variables["start_id"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "id", _start=j );
+						TEMP_SIG_BOTTOM.init_start ( i, "id", j );
 						sig_types.push_back ( "id" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_id"] )
+					if ( curr_char == CONFIG.char_variables["end_id"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "id", _end=j );
+						TEMP_SIG_BOTTOM.init_end ( i, "id", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );
@@ -236,17 +253,17 @@ class HTML_SIG
 						TEMP_SIG_LINE.clear ( );
 					}
 					
-					if ( curr_char == CONFIG.variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["end_style"] )
 					{
 						TEMP_SIG_BOTTOM.clear ( );
-						TEMP_SIG_BOTTOM.init ( i, "style", _start=j );
+						TEMP_SIG_BOTTOM.init_start ( i, "style", j );
 						sig_types.push_back ( "style" );
 						continue;
 					}
 					
-					if ( curr_char == CONFIG.variables["end_style"] )
+					if ( curr_char == CONFIG.char_variables["end_style"] )
 					{
-						TEMP_SIG_BOTTOM.init ( i, "style", _end=j );
+						TEMP_SIG_BOTTOM.init_end ( i, "style", j );
 						SIGNALS.push_back ( TEMP_SIG_BOTTOM );
 						
 						TEMP_SIG_LINE.push_back ( i );

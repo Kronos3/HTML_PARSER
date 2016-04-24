@@ -26,7 +26,7 @@
 #define __HTML_SIGNAL_GROUP__
 
 #include <iostream>
-#include "signal_parser.hpp"
+#include "../config/html_config.hpp"
 
 using namespace std;
 
@@ -39,7 +39,7 @@ class signal_group
 	
 	void init ( vector < SIGNAL > _signals )
 	{
-		signals = _signals
+		signals = _signals;
 		for ( size_t i = 0; i != signals.size ( ); i++ )
 		{
 			SIGNAL curr = signals [ i ];
@@ -50,11 +50,11 @@ class signal_group
 	vector < SIGNAL > operator[] ( int __line )
 	{
 		vector < SIGNAL > BUFF;
-		for ( vector < SIGNAL >::iterator i = signals.begin ( ); i != signals.end ( ); i++ )
+		for ( unsigned int i = 0; i != signals.size ( ); i++ )
 		{
-			if ( i.line_number == __line )
+			if ( signals [ i ].line_number == __line )
 			{
-				BUFF.push_back ( i* );
+				BUFF.push_back ( signals [ i ] );
 			}
 		}
 		return BUFF;
@@ -62,8 +62,8 @@ class signal_group
 	
 	vector < int > operator ( ) ( int __line )
 	{
-		vector < SIGNAL > BUFF;
-		for ( unsigned int i = signals.begin ( ); i != signals.end ( ); i++ )
+		vector < int > BUFF;
+		for ( unsigned int i = 0; i != signals.size ( ); i++ )
 		{
 			if ( signals [ i ].line_number == __line )
 			{
