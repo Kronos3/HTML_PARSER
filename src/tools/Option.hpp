@@ -37,6 +37,7 @@ class option
 	string name;
 	string _type;
 	string value;
+	string _default;
 	bool bool_val;
 	bool used;
 	string desc;
@@ -58,12 +59,13 @@ class option
 		return in;
 	}
 	
-	void init ( string __long, string _default, string __short = "", string __type = "string", string _desc = "" )
+	void init ( string __long, string __default, string __short = "", string __type = "string", string _desc = "" )
 	{
 		_long = __long;
 		_short = __short;
 		_type = __type;
-		value = _default;
+		value = __default;
+		_default = __default;
 		desc = _desc;
 		used = false;
 		bool_val = misc::stob ( _default );
@@ -79,7 +81,7 @@ class option
 		}
 		else if ( _type != "bool" and BUFF.size ( ) == 1 )
 		{
-			value = "";
+			value = _default;
 		}
 		else
 		{

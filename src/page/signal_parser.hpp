@@ -86,6 +86,7 @@ class signal_parser
 			if ( find == -1 )
 			{
 				output_file.push_back ( curr_str );
+				cout << curr_str << endl;
 				continue;
 			}
 			
@@ -99,6 +100,7 @@ class signal_parser
 			}
 			
 			curr_str = mult_replace ( curr_str, replacing, this_line );
+			cout << curr_str << endl;
 			output_file.push_back ( curr_str );
 		}
 	}

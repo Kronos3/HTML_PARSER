@@ -26,8 +26,6 @@
 #define __HTML_CONFIG__
 
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
 #include "../tools/file.hpp"
 #include "../tools/_misc_tools.hpp"
