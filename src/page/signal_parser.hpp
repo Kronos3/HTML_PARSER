@@ -56,6 +56,7 @@ class signal_parser
 			string curr_output_str;
 			sig_line_numbers.push_back ( curr.line_number );
 			
+			
 			if ( curr.sig_type == "esc" )
 			{
 				output_string.push_back ( input_file [ curr.line_number ].substr ( curr.start, curr.length ) );
@@ -76,32 +77,27 @@ class signal_parser
 	
 	void write_out ( )
 	{
+		output_file = input_file;
+		vector < int > used_lines;
 		for ( size_t i = 0; i != output_string.size ( ); i++ )
 		{
-			string curr_str ( output_string [ i ] );
-			int buff_i = static_cast < int > ( i );
-			
-			int find = misc::find < int > ( sig_line_numbers, buff_i );
-			
-			if ( find == -1 )
+			if ( misc::in < vector < int >, int > ( used_lines, sig_line_numbers [ i ] ) )
 			{
-				output_file.push_back ( curr_str );
-				cout << curr_str << endl;
 				continue;
 			}
 			
-			vector < SIGNAL > this_line = sig_group [ i ];
-			vector < int > out_line_nums = sig_group ( i );
+			string curr_str ( output_string [ i ] );
+			vector < SIGNAL > this_line = sig_group [ sig_line_numbers [ i ] ];
+			vector < int > out_line_nums = sig_group ( sig_line_numbers [ i ] );
 			vector < string > replacing;
-			
 			for ( vector < int >::iterator j = out_line_nums.begin ( ); j != out_line_nums.end ( ); j++ )
 			{
-				replacing.push_back ( output_string [ *j ] );
+				replacing.insert ( replacing.begin ( ), output_string [ *j ] );
 			}
+			curr_str = mult_replace ( input_file [ sig_line_numbers [ i ] ], replacing, this_line );
+			output_file [ sig_line_numbers [ i ] ] = ( curr_str );
 			
-			curr_str = mult_replace ( curr_str, replacing, this_line );
-			cout << curr_str << endl;
-			output_file.push_back ( curr_str );
+			used_lines.push_back ( sig_line_numbers [ i ] );
 		}
 	}
 };

@@ -47,15 +47,12 @@ int main(int argc, char *argv [])
 	parser_opts.create_help ( );
 	parser_opts.feed ( input );
 	
-	cout << parser_opts ( "config" ) << " << CONF_FILE" << endl;
+	HTML_CONFIG MAIN_CONFIG;
+	MAIN_CONFIG.load ( parser_opts ( "config" ) );
 	
-	//HTML_CONFIG MAIN_CONFIG;
-	//MAIN_CONFIG.load ( parser_opts ( "config" ) );
-	
-	//cout << MAIN_CONFIG.variables [ "header" ] << " << IN_FILE" << endl;
-	//body BODY;
-	//BODY.init ( MAIN_CONFIG, MAIN_CONFIG.variables [ "header" ] );
-	//misc::print_vec < string > ( BODY.body_out );
+	body BODY;
+	BODY.init ( MAIN_CONFIG, MAIN_CONFIG.variables [ "header" ] );
+	misc::print_vec < string > ( BODY.body_out );
 	
 	return 0;
 }

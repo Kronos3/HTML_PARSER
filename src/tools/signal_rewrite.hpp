@@ -33,14 +33,20 @@ using namespace std;
 string mult_replace ( string in, vector < string > toReplace, vector < SIGNAL > sig_in )
 {
 	string out = in;
+	int minus;
+	int plus;
 	for ( size_t i = 0; i != toReplace.size ( ); i++ )
 	{
-		out.replace ( sig_in [ i ].start, sig_in [ i ].length, toReplace [ i ] );
-		int in_len = sig_in [ i ].length;
-		int out_len = toReplace [ i ].length ( );
-		sig_in [ i + 1 ].length += out_len - in_len; 
+		if ( sig_in [ i ].sig_type == "esc" )
+		{
+			continue;
+		}
+		
+		minus = 1;
+		plus = 2;
+		
+		out.replace ( sig_in [ i ].start - minus, sig_in [ i ].length + plus, toReplace [ i ] );
 	}
-	
 	return out;
 }
 

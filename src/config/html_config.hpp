@@ -53,19 +53,17 @@ class HTML_CONFIG
 	
 	void load ( string _file )
 	{
-		file = file;
+		file = _file;
 		content = File ( file ).readlines ( );
-		
 		for ( size_t i = 0; i != content.size ( ); i++ )
 		{
 			string curr ( content [ i ] );
-			if ( curr [ 0 ] == '#' )
+			if ( curr [ 0 ] == '#' or curr.empty ( ) )
 			{
 				continue;
 			}
 			
 			vector < string > __temp__ ( misc::split ( curr, '=', true ) );
-			
 			variables [ __temp__ [ 0 ] ] = __temp__ [ 1 ];
 			var_list.push_back ( __temp__[0] );
 			val_list.push_back ( __temp__[1] );
@@ -99,6 +97,8 @@ typedef struct
 	int start;
 	int end;
 	int length;
+	char start_char;
+	char end_char;
 	
 	void init_start ( int _line_number, string _sig_type, int _start )
 	{
@@ -107,7 +107,7 @@ typedef struct
 		sig_type = _sig_type;
 		if ( _start != -1 )
 		{
-			start = _start;
+			start = _start + 1;
 		}
 		if ( _end != -1 )
 		{
@@ -130,6 +130,12 @@ typedef struct
 			end = _end;
 			length = end - start;
 		}
+	}
+	
+	void feed_chars ( char _start_char, char _end_char )
+	{
+		start_char = _start_char;
+		end_char = _end_char;
 	}
 	
 	void clear ( )
@@ -189,6 +195,7 @@ class HTML_SIG
 				{
 					esc = true;
 					TEMP_SIG_TOP.init_start ( i, "esc", j );
+					TEMP_SIG_TOP.feed_chars ( CONFIG.char_variables["start_esc"], CONFIG.char_variables["end_esc"] );
 					sig_types.push_back ( "esc" );
 					continue;
 				}
@@ -217,6 +224,7 @@ class HTML_SIG
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "class", j );
+						TEMP_SIG_TOP.feed_chars ( CONFIG.char_variables["start_class"], CONFIG.char_variables["end_class"] );
 						sig_types.push_back ( "class" );
 						__class = true;
 						continue;
@@ -242,6 +250,7 @@ class HTML_SIG
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "id", j );
+						TEMP_SIG_TOP.feed_chars ( CONFIG.char_variables["start_id"], CONFIG.char_variables["end_id"] );
 						sig_types.push_back ( "id" );
 						__id = true;
 						continue;
@@ -266,6 +275,7 @@ class HTML_SIG
 					{
 						TEMP_SIG_BOTTOM.clear ( );
 						TEMP_SIG_BOTTOM.init_start ( i, "style", j );
+						TEMP_SIG_TOP.feed_chars ( CONFIG.char_variables["start_style"], CONFIG.char_variables["end_style"] );
 						sig_types.push_back ( "style" );
 						__style = true;
 						continue;

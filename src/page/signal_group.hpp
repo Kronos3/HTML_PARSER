@@ -50,11 +50,11 @@ class signal_group
 	vector < SIGNAL > operator[] ( int __line )
 	{
 		vector < SIGNAL > BUFF;
-		for ( unsigned int i = 0; i != signals.size ( ); i++ )
+		for ( vector < SIGNAL >::iterator i = signals.begin ( ); i != signals.end ( ); i++ )
 		{
-			if ( signals [ i ].line_number == __line )
+			if ( i->line_number == __line )
 			{
-				BUFF.push_back ( signals [ i ] );
+				BUFF.insert ( BUFF.begin ( ), *i );
 			}
 		}
 		return BUFF;

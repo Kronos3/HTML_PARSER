@@ -43,8 +43,9 @@ class body
 	{
 		config = _config;
 		body_in = File ( file_in ).readlines ( );
-		sig.load ( config, config.file );
+		sig.load ( config, file_in );
 		sig_parser.parse ( sig );
+		sig_parser.write_out ( );
 		body_out = sig_parser.output_file;
 	}
 };
