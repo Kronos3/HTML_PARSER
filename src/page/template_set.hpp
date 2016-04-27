@@ -1,5 +1,5 @@
 /*
- * parser.cxx
+ * template_set.hpp
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -21,39 +21,35 @@
  * 
  */
 
+#ifndef __HTML_TEMPLATE_VAR_SET__
+#define __HTML_TEMPLATE_VAR_SET__
 
 #include <iostream>
-#include "tools/Option.hpp"
-#include "page/body.hpp"
+#include "template_variable.hpp"
 
-int main(int argc, char *argv [])
+typedef struct
 {
-	string input;
+	vector < template_variable > template_list;
+	vector < string > names;
 	
-	for ( int i = 0; i != argc; i++ )
+	void add ( template_variable var )
 	{
-		input += argv [ i ];
-		input += " ";
+		template_list.push_back ( var );
+		names.push_back ( var.name );
 	}
 	
-	OptionSet parser_opts;
-	parser_opts.init ( "emerge", "Use the AutoGentoo portage API to install specified packages" );
-	
-	parser_opts.add_arg ( "OPTIONS" );
-	parser_opts.add_arg ( "CONFIG" );
-	
-	parser_opts.add_option ( "config", "config/config", "c", "string", "Specify the config file for parser" );
-	
-	parser_opts.create_help ( );
-	parser_opts.feed ( input );
-	
-	HTML_CONFIG MAIN_CONFIG;
-	MAIN_CONFIG.load ( parser_opts ( "config" ) );
-	
-	body BODY;
-	BODY.init ( MAIN_CONFIG, MAIN_CONFIG.variables [ "HEADER" ] );
-	misc::print_vec < string > ( BODY.body_out );
-	
-	return 0;
-}
+	template_variable operator [] ( string name )
+	{
+		for ( size_t it = 0; it != names.size ( ); it++ )
+		{
+			if ( names [ it ] == name )
+			{
+				return template_list [ it ];
+			}
+		}
+		template_variable buff;
+		return buff;
+	}
+} template_set;
 
+#endif

@@ -25,7 +25,7 @@
 #define __HTML_PARSER_HEADER__
 
 #include <iostream>
-#include "
+#include "../config/html_config.hpp"
 
 using namespace std;
 
@@ -39,17 +39,14 @@ class header
 	vector < string > header_out;
 	
 	HTML_CONFIG config;
-	HTML_SIG sig;
-	signal_parser sig_parser;
 	
-	void init ( string _source_file )
+	void init ( HTML_CONFIG _config, string _source_file, vector < string > _header_out )
 	{
+		config = _config;
 		source_file = _source_file;
 		content = File ( _source_file ).readlines ( );
 		
-		sig.load ( config, config.file );
-		sig_parser.parse ( sig );
-		body_out = sig_parser.output_file;
+		header_out = _header_out;
 	}
 };
 
