@@ -1,7 +1,7 @@
 /*
  * Option.hpp
  * 
- * Copyright 2015 Andrei Tumbar <atadmin@Helios>
+ * Copyright 2016 Andrei Tumbar <atadmin@Helios>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <map>
-#include "_misc_tools.hpp"
+#include "../tools/_misc_tools.hpp"
 
 using namespace std;
 
@@ -37,7 +37,6 @@ class option
 	string name;
 	string _type;
 	string value;
-	string _default;
 	bool bool_val;
 	bool used;
 	string desc;
@@ -59,13 +58,12 @@ class option
 		return in;
 	}
 	
-	void init ( string __long, string __default, string __short = "", string __type = "string", string _desc = "" )
+	void init ( string __long, string _default, string __short = "", string __type = "string", string _desc = "" )
 	{
 		_long = __long;
 		_short = __short;
 		_type = __type;
-		value = __default;
-		_default = __default;
+		value = _default;
 		desc = _desc;
 		used = false;
 		bool_val = misc::stob ( _default );
@@ -81,7 +79,7 @@ class option
 		}
 		else if ( _type != "bool" and BUFF.size ( ) == 1 )
 		{
-			value = _default;
+			value = "";
 		}
 		else
 		{

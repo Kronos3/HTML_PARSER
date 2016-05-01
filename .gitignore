@@ -1,2 +1,5 @@
 # Ignore these:
 src/parser
+src/input
+src/output
+src/template

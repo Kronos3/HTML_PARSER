@@ -23,8 +23,13 @@
 
 
 #include <iostream>
-#include "tools/Option.hpp"
+#include <fstream>
+#include <unistd.h>
 #include "page/body.hpp"
+#include "page/template.hpp"
+#include "tools/Option.hpp"
+
+using namespace std;
 
 int main(int argc, char *argv [])
 {
@@ -36,23 +41,52 @@ int main(int argc, char *argv [])
 		input += " ";
 	}
 	
-	OptionSet parser_opts;
-	parser_opts.init ( "emerge", "Use the AutoGentoo portage API to install specified packages" );
-	
-	parser_opts.add_arg ( "OPTIONS" );
-	parser_opts.add_arg ( "CONFIG" );
-	
-	parser_opts.add_option ( "config", "config/config", "c", "string", "Specify the config file for parser" );
-	
-	parser_opts.create_help ( );
-	parser_opts.feed ( input );
-	
 	HTML_CONFIG MAIN_CONFIG;
-	MAIN_CONFIG.load ( parser_opts ( "config" ) );
+	Template MAIN_TEMPLATE;
+	vector < body > body_files;
+	OptionSet opts;
 	
-	body BODY;
-	BODY.init ( MAIN_CONFIG, MAIN_CONFIG.variables [ "HEADER" ] );
-	misc::print_vec < string > ( BODY.body_out );
+	opts.init ( "parser", "Parse the input files for HTML_PARSER" );
+	
+	opts.add_arg ( "OPTIONS" );
+	opts.add_arg ( "CONFIG" );
+	
+	opts.add_option ( "config", "parser.cfg", "c", "string", "Specify the config file for parser" );
+	opts.add_option ( "write", "true", "w", "bool", "Specify whether to write the output file" );
+	
+	opts.create_help ( );
+	opts.feed ( input );
+	
+	chdir ( misc::get_dir ( opts ( "config" ) ).c_str ( ) );
+	
+	MAIN_CONFIG.load ( opts ( "config" ) );
+	
+	for ( size_t i = 0; i != MAIN_CONFIG.vector_vars [ "input_files" ].size ( ); i++ )
+	{
+		body curr_body;
+		curr_body.init ( MAIN_CONFIG, MAIN_CONFIG.vector_vars [ "input_files" ] [ i ], MAIN_CONFIG.vector_vars [ "output_files" ] [ i ], MAIN_CONFIG.vector_vars [ "title" ] [ i ] );
+		body_files.push_back ( curr_body );
+	}
+	
+	MAIN_TEMPLATE.init ( MAIN_CONFIG, MAIN_CONFIG.variables [ "template" ] );
+	
+	if ( opts [ "write" ] )
+	{
+		for ( size_t i = 0; i != MAIN_CONFIG.vector_vars [ "output_files" ].size ( ); i++ )
+		{
+			vector < string > buff = MAIN_TEMPLATE.new_file ( body_files [ i ] );
+			ofstream curr_file;
+			string curr_file_name = MAIN_CONFIG.vector_vars [ "output_files" ] [ i ];
+			cout << curr_file_name << endl;
+			curr_file.open ( curr_file_name.c_str ( ), ios::out | ios::trunc );
+			for ( vector < string >::iterator line = buff.begin ( ); line != buff.end ( ); line++ )
+			{
+				curr_file << line->c_str ( ) << endl;
+			}
+			
+			curr_file.close ( );
+		}
+	}
 	
 	return 0;
 }

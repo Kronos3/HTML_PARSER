@@ -44,6 +44,8 @@ class template_variable
 	vector < string > template_file;
 	vector < string > in_file;
 	vector < string > out_file;
+	body processed;
+	HTML_CONFIG config;
 	
 	void init_name ( vector < string > __template, int _line_number, int _indent )
 	{
@@ -51,13 +53,13 @@ class template_variable
 		template_file = __template;
 		
 		indent = _indent;
-		
-		name = template_file [ line_number ].substr ( indent, template_file [ line_number ].length ( ) - indent - 1 );
+		name = template_file [ line_number ].substr ( indent + 1, template_file [ line_number ].length ( ) - indent - 2 );
 	}
 	
-	void init ( string _file_name, bool __auto__ = false, string auto_filenames = "" )
+	void init ( string _file_name, HTML_CONFIG _config, bool __auto__ = false, string auto_filenames = "" )
 	{
 		file_name = _file_name;
+		config = _config;
 		
 		if ( __auto__ )
 		{
@@ -65,13 +67,18 @@ class template_variable
 			return;
 		}
 		
-		in_file = File ( file_name ).readlines ( );
+		processed.init ( config, file_name, "" );
+		in_file = processed.body_out;
 		
 		for ( vector < string >::iterator i = in_file.begin ( ); i != in_file.end ( ); i++ )
 		{
-			string buff = string ( ' ', indent );
-			buff += *i;
+			string buff;
+			for ( int j = 0; j != indent; j++ )
+			{
+				buff += ' ';
+			}
 			
+			buff += *i;
 			out_file.push_back ( buff );
 		}
 	}
@@ -98,10 +105,20 @@ class template_variable
 	vector < string > format_file ( )
 	{
 		vector < string > template_buff = template_file;
-		
 		template_buff.erase ( template_buff.begin ( ) + line_number );
-		template_buff.insert ( template_buff.begin ( ) + line_number, out_file.begin ( ), out_file.end ( ) );
-		
+		if ( out_file.size ( ) == 1 )
+		{
+			template_buff.insert ( template_buff.begin ( ) + line_number, out_file [ 0 ] );
+			return template_buff;
+		}
+		else if ( out_file [ 1 ] == "\n" or out_file [ 1 ].empty ( ) )
+		{
+			template_buff.insert ( template_buff.begin ( ) + line_number, out_file [ 0 ] );
+		}
+		else
+		{
+			template_buff.insert ( template_buff.begin ( ) + line_number, out_file.begin ( ), out_file.end ( ) );
+		}
 		return template_buff;
 	}
 };

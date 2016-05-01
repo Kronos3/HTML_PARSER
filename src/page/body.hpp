@@ -39,14 +39,33 @@ class body
 	HTML_SIG sig;
 	signal_parser sig_parser;
 	
-	void init ( HTML_CONFIG _config, string file_in )
+	string title;
+	string buff_file;
+	
+	void init ( HTML_CONFIG _config, string file_in, string file_out, string _title="file.html" )
 	{
 		config = _config;
+		title = _title;
 		body_in = File ( file_in ).readlines ( );
+		
 		sig.load ( config, file_in );
 		sig_parser.parse ( sig );
 		sig_parser.write_out ( );
+		system ( "ls" );
 		body_out = sig_parser.output_file;
+		buff_file = file_in;
+	}
+	
+	void write_file ( string new_file )
+	{
+		ofstream file;
+		file.open ( new_file.c_str ( ) );
+		for ( vector < string >::iterator it = body_out.begin ( ); it != body_out.end ( ); it++ )
+		{
+			file << *it;
+		}
+		
+		file.close ( );
 	}
 };
 

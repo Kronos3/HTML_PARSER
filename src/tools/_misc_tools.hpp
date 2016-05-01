@@ -362,6 +362,16 @@ namespace misc
 		return false;
 	}
 	
+	std::string get_dir ( std::string in )
+	{
+		int find = misc::rfind ( in, '/' );
+		if ( find == -1 )
+		{
+			return in;
+		}
+		return in.substr ( 0, find );
+	}
+	
 	/*std::string rreplace ( std::string in, std::string find, std::string replace )
 	{
 		std::string out;

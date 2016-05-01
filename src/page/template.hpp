@@ -49,27 +49,31 @@ class Template
 		template_content = File ( template_name ).readlines ( );
 		
 		template_out = template_content;
+		config = _config;
 		
-		for ( vector < string >::iterator i = template_out.end ( ); i != template_out.begin ( ); i-- )
+		for ( size_t i = template_out.size ( ) - 1 ; i != 0; i-- )
 		{
 			int indent = 0;
-			for ( string::iterator j = i->begin ( ); j != i->end ( ); j++ )
+			if ( template_out [ i ].empty ( ) )
 			{
-				if ( *j != ' ' or *j != '	' )
-				{
-					break;
-				}
-				else
+				continue; 
+			}
+			
+			for ( size_t j = 0; j != template_out [ i ].length ( ); j++ )
+			{
+				if ( template_out [ i ] [ j ] == ' ' or template_out [ i ] [ j ] == '	' )
 				{
 					indent += 1;
 				}
+				else
+				{
+					break;
+				}
 			}
-			
-			if ( i->at ( indent + 1 ) == '[' )
+			if ( template_out [ i ] [ indent ] == '[' )
 			{
 				template_variable buff;
-				buff.init_name ( template_out, i - template_content.begin ( ), indent );
-				
+				buff.init_name ( template_out, i, indent );
 				if ( config.variables [ buff.name ] == "$" )
 				{
 					string buff_str;
@@ -91,57 +95,67 @@ class Template
 					{
 						buff_str = config.variables [ "js" ];
 					}
-					
-					buff.init ( config.variables [ buff.name ], true, buff_str );
+					buff.init ( config.variables [ buff.name ], config, true, buff_str );
 				}
-				
-				buff.init ( config.variables [ buff.name ] );
+				else
+				{
+					buff.init ( config.variables [ buff.name ], config );
+				}
 				template_out = buff.format_file ( );
 				template_vars.add ( buff );
 			}
 		}
 	}
 	
-	vector < string > new_file ( string body_file, string title )
+	vector < string > new_file ( body IN )
 	{
-		vector < string > BUFF = template_content;
-		for ( vector < string >::iterator i = BUFF.end ( ); i != BUFF.begin ( ); i-- )
+		string body_file = IN.buff_file;
+		string title = IN.title;
+		
+		vector < string > BUFF = template_out;
+		int l = BUFF.size ( );
+		for ( vector < string >::iterator i = BUFF.end ( ) - 1; i >= BUFF.begin ( ); i-- )
 		{
 			int indent = 0;
+			l--;
+			if ( i->empty ( ) or *i == "\n" )
+			{
+				continue;
+			}
+			
 			for ( string::iterator j = i->begin ( ); j != i->end ( ); j++ )
 			{
-				if ( *j != ' ' or *j != '	' )
-				{
-					break;
-				}
-				else
+				if ( *j == ' ' or *j == '	' )
 				{
 					indent += 1;
 				}
+				else
+				{
+					break;
+				}
 			}
-			
-			if ( i->substr ( indent + 1, 5 ) == "[BODY" )
+			if ( i->substr ( indent, 5 ) == "[BODY" )
 			{
 				template_variable buff;
-				buff.init_name ( template_out, i - template_content.begin ( ), indent );
-				buff.init ( body_file );
+				buff.init_name ( BUFF, l, indent );
+				buff.init ( body_file, config );
 				BUFF = buff.format_file ( );
 			}
-			else if ( i->substr ( indent + 1, 6 ) == "[TITLE" )
+			else if ( i->substr ( indent, 6 ) == "[TITLE" )
 			{
 				template_variable buff;
-				buff.init_name ( template_out, i - template_content.begin ( ), indent );
+				buff.init_name ( BUFF, l, indent );
+				ofstream temp;
+				temp.open ( "title.temp", ios::out | ios::trunc );
+				temp << "<title>" + title + "</title>";
+				temp.close ( );
 				
-				string title_cmd = "echo \"<title>" + title + "</title>\" >> title.temp";
-				system ( title_cmd.c_str ( ) );
-				
-				buff.init ( "title.temp" );
+				buff.init ( "title.temp", config );
 				BUFF = buff.format_file ( );
-				
 				system ( "rm -rf title.temp" );
 			}
+			i = BUFF.begin ( ) + l;
 		}
-		
 		return BUFF;
 	}
 };
