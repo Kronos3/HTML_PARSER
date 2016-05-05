@@ -9,7 +9,7 @@ OBJ: $(parser_SOURCES)
 	$(CXX) $(parser_SOURCES) -I $(INCDIRS)
 
 all: $(OBJ)
-	$(LXX) *.o -o $(bin_PROGRAMS)
+	$(LXX) -o $(bin_PROGRAMS) *.o
 
 clean:
 	rm *.o
