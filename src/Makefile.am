@@ -8,7 +8,7 @@ parser_SOURCES = parser.cpp body.cpp file.cpp _misc_tools.cpp option.cpp options
 OBJ: $(parser_SOURCES)
 	$(CXX) $(parser_SOURCES) -I $(INCDIRS)
 
-all: $(OBJ)
+all: OBJ
 	$(LXX) -o $(bin_PROGRAMS) *.o
 
 clean:
