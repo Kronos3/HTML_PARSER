@@ -86,7 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = main$(EXEEXT)
+bin_PROGRAMS = parser$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -99,13 +99,13 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_main_OBJECTS = body.$(OBJEXT) file.$(OBJEXT) _misc_tools.$(OBJEXT) \
-	option.$(OBJEXT) optionset.$(OBJEXT) signal_group.$(OBJEXT) \
-	signal_parser.$(OBJEXT) signal_rewrite.$(OBJEXT) \
-	template.$(OBJEXT) template_set.$(OBJEXT) \
-	template_variable.$(OBJEXT) parser.$(OBJEXT)
-main_OBJECTS = $(am_main_OBJECTS)
-main_LDADD = $(LDADD)
+am_parser_OBJECTS = parser.$(OBJEXT) body.$(OBJEXT) file.$(OBJEXT) \
+	_misc_tools.$(OBJEXT) option.$(OBJEXT) optionset.$(OBJEXT) \
+	signal_group.$(OBJEXT) signal_parser.$(OBJEXT) \
+	signal_rewrite.$(OBJEXT) template.$(OBJEXT) \
+	template_set.$(OBJEXT) template_variable.$(OBJEXT)
+parser_OBJECTS = $(am_parser_OBJECTS)
+parser_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -147,8 +147,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(main_SOURCES)
-DIST_SOURCES = $(main_SOURCES)
+SOURCES = $(parser_SOURCES)
+DIST_SOURCES = $(parser_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -268,7 +268,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 LINKER = g++
 INCDIRS = -I.
-main_SOURCES = body.cpp body.h file.cpp file.h html_config.hpp include.h _misc_tools.cpp _misc_tools.h option.cpp option.h optionset.h optionset.cpp signal_group.cpp signal_group.h signal_parser.cpp signal_parser.h signal_rewrite.cpp signal_rewrite.h template.cpp template.h template_set.cpp template_set.h template_variable.cpp template_variable.h parser.cpp
+parser_SOURCES = parser.cpp body.cpp body.h file.cpp file.h html_config.hpp include.h _misc_tools.cpp _misc_tools.h option.cpp option.h optionset.h optionset.cpp signal_group.cpp signal_group.h signal_parser.cpp signal_parser.h signal_rewrite.cpp signal_rewrite.h template.cpp template.h template_set.cpp template_set.h template_variable.cpp template_variable.h
 all: all-am
 
 .SUFFIXES:
@@ -345,9 +345,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-main$(EXEEXT): $(main_OBJECTS) $(main_DEPENDENCIES) $(EXTRA_main_DEPENDENCIES) 
-	@rm -f main$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(main_OBJECTS) $(main_LDADD) $(LIBS)
+parser$(EXEEXT): $(parser_OBJECTS) $(parser_DEPENDENCIES) $(EXTRA_parser_DEPENDENCIES) 
+	@rm -f parser$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(parser_OBJECTS) $(parser_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -588,6 +588,9 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+exec:
+	gcc -o parser $(OBJ)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
