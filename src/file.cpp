@@ -25,8 +25,6 @@
 #include "file.h"
 #include "include.h"
 
-using namespace std;
-
 File::File ( string fileName )
 {
 	/// Open the file
@@ -44,6 +42,7 @@ vector<string> File::readlines ( )
 	for ( size_t y = 0; y != text.str ( ).length ( ); y++ )
 	{
 		char curr = text.str ( )[y];
+		buff += curr;
 		if ( curr == '\n' )
 		{
 			returnList.push_back ( buff );
@@ -66,9 +65,9 @@ string File::read ( )
 string File::readline ( )
 {
 	/// Create a buffer to later be returned
-	string buffstr;
+	std::string buffstr;
 	
-	vector<string> readFile = readlines ( );
+	std::vector<std::string> readFile = readlines ( );
 	
 	if ( currentLine > readFile.size ( ) )
 	{
@@ -89,7 +88,7 @@ string File::readline ( )
 */
 string File::get ( int line )
 {
-	string buffstr; //!< Create a buffer to later be returned
+	std::string buffstr; //!< Create a buffer to later be returned
 	
 	buffstr = readlines ( ) [line]; /// Set buffstr to line
 	

@@ -68,13 +68,11 @@ int main(int argc, char *argv [])
 	opts.feed ( input );
 	
 	chdir ( misc::get_dir ( opts ( "config" ) ).c_str ( ) );
-	cout << "WORKING" << endl;;
 	MAIN_CONFIG.load ( opts ( "config" ) );
 	for ( size_t i = 0; i != MAIN_CONFIG.vector_vars [ "input_files" ].size ( ); i++ )
 	{
 		body curr_body;
 		curr_body.init ( MAIN_CONFIG, MAIN_CONFIG.vector_vars [ "input_files" ] [ i ], MAIN_CONFIG.vector_vars [ "output_files" ] [ i ], MAIN_CONFIG.vector_vars [ "title" ] [ i ] );
-		cout << MAIN_CONFIG.vector_vars [ "input_files" ] [ i ] << endl;
 		body_files.push_back ( curr_body );
 	}
 	
@@ -87,11 +85,10 @@ int main(int argc, char *argv [])
 			vector < string > buff = MAIN_TEMPLATE.new_file ( body_files [ i ] );
 			ofstream curr_file;
 			string curr_file_name = MAIN_CONFIG.vector_vars [ "output_files" ] [ i ];
-			cout << curr_file_name << endl;
 			curr_file.open ( curr_file_name.c_str ( ), ios::out | ios::trunc );
 			for ( vector < string >::iterator line = buff.begin ( ); line != buff.end ( ); line++ )
 			{
-				curr_file << line->c_str ( ) << endl;
+				curr_file << line->c_str ( );
 			}
 			
 			curr_file.close ( );

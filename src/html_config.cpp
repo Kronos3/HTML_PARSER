@@ -30,11 +30,10 @@ void HTML_CONFIG::load ( string _file )
 {
 	file = _file;
 	content = File ( file ).readlines ( );
-	misc::print_vec ( content );
 	for ( size_t i = 0; i != content.size ( ); i++ )
 	{
 		string curr ( content [ i ] );
-		if ( curr [ 0 ] == '#' or curr.empty ( ) )
+		if ( curr [ 0 ] == '#' or curr.empty ( ) or curr == "\n" )
 		{
 			continue;
 		}

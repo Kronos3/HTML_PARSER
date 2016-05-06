@@ -35,7 +35,6 @@ void body::init ( HTML_CONFIG _config, string file_in, string file_out, string _
 	sig.load ( config, file_in );
 	sig_parser.parse ( sig );
 	sig_parser.write_out ( );
-	system ( "ls" );
 	body_out = sig_parser.output_file;
 	buff_file = file_in;
 }

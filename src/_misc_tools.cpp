@@ -178,7 +178,7 @@ namespace misc
 			}
 			if ( _trim )
 			{
-				if ( curr != ' ' )
+				if ( curr != ' ' and curr != '\n' )
 				{
 					buff += curr;
 				}
@@ -271,7 +271,7 @@ namespace misc
 	{
 		for ( size_t i = 0; i != in.size ( ); i++ )
 		{
-			std::cout << in [ i ] << std::endl;
+			std::cout << in [ i ];
 		}
 	}
 	

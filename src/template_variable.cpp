@@ -33,7 +33,7 @@ void template_variable::init_name ( vector < string > __template, int _line_numb
 	template_file = __template;
 	
 	indent = _indent;
-	name = template_file [ line_number ].substr ( indent + 1, template_file [ line_number ].length ( ) - indent - 2 );
+	name = template_file [ line_number ].substr ( indent + 1, template_file [ line_number ].length ( ) - indent - 3 );
 }
 
 void template_variable::init ( string _file_name, HTML_CONFIG _config, bool __auto__ = false, string auto_filenames = "" )
