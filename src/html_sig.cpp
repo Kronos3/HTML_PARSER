@@ -34,7 +34,8 @@ void HTML_SIG::load ( HTML_CONFIG _CONFIG, string _file )
 	{
 		string curr_line ( file [ i ] );
 		
-		bool esc;
+		bool esc = false;
+		bool quote = false;
 		
 		bool __class = false;
 		bool __style = false;
@@ -48,6 +49,12 @@ void HTML_SIG::load ( HTML_CONFIG _CONFIG, string _file )
 		for ( size_t j = 0; j != curr_line.length ( ); j++ )
 		{
 			char curr_char = curr_line [ j ];
+			
+			if ( curr_char == '\"' )
+			{
+				quote = !quote;
+			}
+			
 			if ( j != 0 )
 			{
 				if ( curr_line [ j - 1 ] == CONFIG.char_variables["esc"] )
@@ -55,6 +62,12 @@ void HTML_SIG::load ( HTML_CONFIG _CONFIG, string _file )
 					continue;
 				}
 			}
+			
+			if ( quote )
+			{
+				continue;
+			}
+			
 			if ( curr_char == CONFIG.char_variables["start_esc"] )
 			{
 				esc = true;
