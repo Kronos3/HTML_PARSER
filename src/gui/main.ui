@@ -2,10 +2,13 @@
 <!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
-  <object class="GtkFileChooserDialog" id="filechooserdialog1">
+  <object class="GtkFileChooserDialog" id="filechooser">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Open...</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <signal name="file-activated" handler="file_changed" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox1">
         <property name="can_focus">False</property>
@@ -16,10 +19,32 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="close">
+                <property name="label" translatable="yes">Close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="close_file_dia" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="open_button">
+                <property name="label" translatable="yes">Open</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="open_file" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -29,7 +54,49 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkBox" id="file_chooser_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_bottom">3</property>
+            <child>
+              <object class="GtkLabel" id="type_info">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xpad">30</property>
+                <property name="label" translatable="yes">Type:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="type_chooser">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">3</property>
+                <items>
+                  <item id="template" translatable="yes">Template</item>
+                  <item id="input" translatable="yes">Input</item>
+                  <item id="config" translatable="yes">Config</item>
+                  <item id="other" translatable="yes">Other</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">35</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -270,6 +337,7 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">New Template</property>
     <property name="window_position">center</property>
+    <property name="deletable">False</property>
     <child>
       <object class="GtkBox" id="temp_top_level">
         <property name="visible">True</property>

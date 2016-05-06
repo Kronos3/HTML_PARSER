@@ -32,10 +32,18 @@ gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango
 
 class FileManager:
+	
+	buffers = []
+	labels = []
+	
 	def __init__ ( self, _main_box ):
 		self.main_box = _main_box
 		self.notebook = Gtk.Notebook ( )
 		self.main_box.add ( self.notebook )
+	
+	def get_bare_name ( self, string ):
+		i = string.rfind ( "/" )
+		return string [ i + 1: ]
 	
 	def open ( self, __file ):
 		lm = GtkSource.LanguageManager.new ( )
@@ -47,7 +55,17 @@ class FileManager:
 			buffer.set_language ( language )
 		else:
 			print ( "No language found for file '%s'" % __file )
-			buffer.set_highlight_syntax(False)
+			print ( "Using first line program" )
+			
+			buff = open ( __file, "r" ).readlines ( ) [ 0 ]
+			try:
+				buff.split ( " " ) [ 1 ]
+			except IndexError:
+				print ( "Language not found!" )
+				buffer.set_highlight_syntax ( False )
+			else:
+				lan_name = buff.split ( " " ) [ 1 ]
+				language = lm.guess_language ( "a.%s" % lan_name, None )
 		
 		buff_txt = open ( __file ).read ( )
 		buffer.set_text ( buff_txt )
@@ -67,15 +85,16 @@ class FileManager:
 		fontdesc = Pango.FontDescription ( "Monospace 10.5" )
 		SOURCE.override_font ( fontdesc )
 		
-		SOURCE.set_tab_width ( 4 );
+		SOURCE.set_tab_width ( 4 )
 		
 		curr_scrolled = Gtk.ScrolledWindow ( )
 		curr_scrolled.add ( SOURCE )
-		curr_scrolled.set_hexpand(True)
-		curr_scrolled.set_vexpand(True)
+		curr_scrolled.set_hexpand ( True )
+		curr_scrolled.set_vexpand ( True )
 		
-		label = Gtk.Label ( __file )
+		label = Gtk.Label ( self.get_bare_name ( __file ) )
 		self.notebook.prepend_page ( curr_scrolled, label )
+		self.notebook.set_current_page ( 0 )
 		self.notebook.show_all ( )
 
 class BuilderSet ( object ):
@@ -118,12 +137,37 @@ def temp_ok ( button ):
 def temp_cancel ( button, *args ):
 	MAIN.project.TemplateWindow.hide ( )
 
+def __open__ ( button ):
+	MAIN.project.file_chooser.show_all ( )
+
+def file_changed ( file_dialog ):
+	__file = file_dialog.get_filename ( )
+	open_file ( __file )
+
+def close_file_dia ( button ):
+	MAIN.project.file_chooser.hide ( )
+
+def open_file ( __file ):
+	type_chooser = MAIN.project.builders [ "main.ui" ].get_object ( "type_chooser" )
+	
+	type_id = type_chooser.get_model ( ) [ type_chooser.get_active ( ) ] [ 1 ]
+	
+	MAIN.project.open ( __file, type_id )
+	MAIN.project.file_chooser.hide ( )
+
+def open_file_sig ( button ):
+	open_file ( MAIN.project.builders [ "main.ui" ].get_object ( "filechooser" ).get_filename ( ) )
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "template": new_template,
 "page": new_page,
 "temp_ok": temp_ok,
-"temp_cancel": temp_cancel
+"temp_cancel": temp_cancel,
+"open": __open__,
+"file_changed": file_changed,
+"close_file_dia": close_file_dia,
+"open_file": open_file_sig
 }
 
 class Project:
@@ -141,6 +185,8 @@ class Project:
 		
 		self.MainWindow = self.builders [ "main.ui" ].get_object ( "main" )
 		self.TemplateWindow = self.builders [ "main.ui" ].get_object ( "new_temp_main" )
+		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
+		self.file_chooser.set_transient_for ( self.MainWindow )
 		
 		self.files = FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ) )
 		
@@ -166,7 +212,7 @@ class main:
 	pages = []
 	other = []
 	
-	def __init__ ( self, start_file="src/parser.cxx", _dir="src/gui", start_type="input" ):
+	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
 		self.project = Project ( start_file, _dir, start_type )
 		
 		if ( start_type == "input" ):
