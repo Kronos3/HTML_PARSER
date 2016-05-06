@@ -28,7 +28,9 @@
 #include <iostream>
 #include "signal_rewrite.h"
 #include "include.h"
-#include <html_config.hpp>
+#include "html_config.h"
+#include "signal.h"
+#include "html_sig.h"
 
 using namespace std;
 

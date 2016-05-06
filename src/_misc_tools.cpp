@@ -267,9 +267,15 @@ namespace misc
 		
 		return returnVec;
 	}
+	void print_vec ( std::vector < std::string > in )
+	{
+		for ( size_t i = 0; i != in.size ( ); i++ )
+		{
+			std::cout << in [ i ] << std::endl;
+		}
+	}
 	
-	template < class T >
-	void print_vec ( std::vector < T > in )
+	void print_vec ( std::vector < int > in )
 	{
 		for ( size_t i = 0; i != in.size ( ); i++ )
 		{
@@ -314,7 +320,7 @@ namespace misc
 		int find = misc::rfind ( in, '/' );
 		if ( find == -1 )
 		{
-			return in;
+			return ".";
 		}
 		return in.substr ( 0, find );
 	}

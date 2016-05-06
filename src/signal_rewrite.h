@@ -27,6 +27,8 @@
 
 #include <iostream>
 #include "signal_parser.h"
+#include "signal.h"
+#include "html_sig.h"
 #include "include.h"
 #include <vector>
 #include <string>

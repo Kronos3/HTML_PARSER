@@ -147,6 +147,11 @@ void OptionSet::feed ( string op_line )
 		for ( size_t i = 0; i != help.size ( ); i++ )
 		{
 			buff_help += help[i];
+			
+			if ( i + 1 != help.size ( ) )
+			{
+				buff_help += "\n";
+			}
 		}
 		
 		cout << buff_help << endl;

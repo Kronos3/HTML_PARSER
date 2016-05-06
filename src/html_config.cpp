@@ -1,5 +1,5 @@
 /*
- * template.h
+ * html_config.cpp
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -22,29 +22,38 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
-
-#include "include.h"
 #include "html_config.h"
-#include "template_set.h"
-#include "body.h"
 
 using namespace std;
 
-class Template
+void HTML_CONFIG::load ( string _file )
 {
-	public:
-		vector < string > template_content;
-		vector < string > template_out;
-		string template_name;
+	file = _file;
+	content = File ( file ).readlines ( );
+	misc::print_vec ( content );
+	for ( size_t i = 0; i != content.size ( ); i++ )
+	{
+		string curr ( content [ i ] );
+		if ( curr [ 0 ] == '#' or curr.empty ( ) )
+		{
+			continue;
+		}
 		
-		HTML_CONFIG config;
+		vector < string > __temp__ ( misc::split ( curr, '=', true ) );
+		variables [ __temp__ [ 0 ] ] = __temp__ [ 1 ];
+		var_list.push_back ( __temp__[0] );
+		val_list.push_back ( __temp__[1] );
 		
-		template_set template_vars;
+		if ( __temp__ [ 1 ].find ( ',' ) != string::npos )
+		{
+			vector < string > buff_vec ( misc::split ( __temp__[1], ',', true ) );
+			vector_vars [ __temp__ [ 0 ] ] = buff_vec;
+		}
 		
-		void init ( HTML_CONFIG _config, string _template_name );
-		vector < string > new_file ( body IN );
-};
-
-#endif /* TEMPLATE_H */ 
+		if ( __temp__ [ 1 ].length ( ) <= 1 )
+		{
+			char BUFF = __temp__ [ 1 ] [ 0 ];
+			char_variables [ __temp__[0] ] = BUFF;
+		}
+	}
+}

@@ -1,5 +1,5 @@
 /*
- * template.h
+ * signal.h
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -22,29 +22,29 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
+#ifndef SIGNAL_H
+#define SIGNAL_H
 
-#include "include.h"
+#include <iostream>
 #include "html_config.h"
-#include "template_set.h"
-#include "body.h"
 
 using namespace std;
 
-class Template
+class SIGNAL
 {
 	public:
-		vector < string > template_content;
-		vector < string > template_out;
-		string template_name;
+		int line_number;
+		string sig_type;
+		int start;
+		int end;
+		int length;
+		char start_char;
+		char end_char;
 		
-		HTML_CONFIG config;
-		
-		template_set template_vars;
-		
-		void init ( HTML_CONFIG _config, string _template_name );
-		vector < string > new_file ( body IN );
+		void init_start ( int _line_number, string _sig_type, int _start );
+		void init_end ( int _line_number, string _sig_type, int _end );
+		void feed_chars ( char _start_char, char _end_char );
+		void clear ( );
 };
 
-#endif /* TEMPLATE_H */ 
+#endif /* SIGNAL_H */ 

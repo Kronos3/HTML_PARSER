@@ -1,5 +1,5 @@
 /*
- * template.h
+ * html_config.h
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -22,29 +22,34 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
+#ifndef HTML_CONFIG_H
+#define HTML_CONFIG_H
 
-#include "include.h"
-#include "html_config.h"
-#include "template_set.h"
-#include "body.h"
+#include <iostream>
+#include <map>
+#include "file.h"
+#include "_misc_tools.h"
 
 using namespace std;
 
-class Template
+class HTML_CONFIG
 {
 	public:
-		vector < string > template_content;
-		vector < string > template_out;
-		string template_name;
+		string file;
+		vector < string > content;
 		
-		HTML_CONFIG config;
+		vector < string > var_list;
+		vector < string > val_list;
+		map < string, string > variables;
+		map < string, char > char_variables;
 		
-		template_set template_vars;
+		map < string, vector < string > > vector_vars;
 		
-		void init ( HTML_CONFIG _config, string _template_name );
-		vector < string > new_file ( body IN );
+		vector < string > output_files;
+		vector < string > css_files;
+		vector < string > js_files;
+		
+		void load ( string _file );
 };
 
-#endif /* TEMPLATE_H */ 
+#endif /* HTML_CONFIG_H */ 

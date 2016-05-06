@@ -31,7 +31,7 @@
 #include <boost/format.hpp>
 #include "file.h"
 #include "_misc_tools.h"
-#include "html_config.hpp"
+#include "html_config.h"
 #include "signal_parser.h"
 #include "body.h"
 #include "template_variable.h"
@@ -68,13 +68,13 @@ int main(int argc, char *argv [])
 	opts.feed ( input );
 	
 	chdir ( misc::get_dir ( opts ( "config" ) ).c_str ( ) );
-	
+	cout << "WORKING" << endl;;
 	MAIN_CONFIG.load ( opts ( "config" ) );
-	
 	for ( size_t i = 0; i != MAIN_CONFIG.vector_vars [ "input_files" ].size ( ); i++ )
 	{
 		body curr_body;
 		curr_body.init ( MAIN_CONFIG, MAIN_CONFIG.vector_vars [ "input_files" ] [ i ], MAIN_CONFIG.vector_vars [ "output_files" ] [ i ], MAIN_CONFIG.vector_vars [ "title" ] [ i ] );
+		cout << MAIN_CONFIG.vector_vars [ "input_files" ] [ i ] << endl;
 		body_files.push_back ( curr_body );
 	}
 	
@@ -100,4 +100,3 @@ int main(int argc, char *argv [])
 	
 	return 0;
 }
-

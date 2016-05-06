@@ -1,5 +1,5 @@
 /*
- * template.h
+ * signal.cpp
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -22,29 +22,52 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
-
-#include "include.h"
-#include "html_config.h"
-#include "template_set.h"
-#include "body.h"
+#include "signal.h"
 
 using namespace std;
 
-class Template
+void SIGNAL::init_start ( int _line_number, string _sig_type, int _start )
 {
-	public:
-		vector < string > template_content;
-		vector < string > template_out;
-		string template_name;
-		
-		HTML_CONFIG config;
-		
-		template_set template_vars;
-		
-		void init ( HTML_CONFIG _config, string _template_name );
-		vector < string > new_file ( body IN );
-};
+	int _end = -1;
+	line_number = _line_number;
+	sig_type = _sig_type;
+	if ( _start != -1 )
+	{
+		start = _start + 1;
+	}
+	if ( _end != -1 )
+	{
+		end = _end;
+		length = end - start;
+	}
+}
 
-#endif /* TEMPLATE_H */ 
+void SIGNAL::init_end ( int _line_number, string _sig_type, int _end )
+{
+	int _start = -1;
+	line_number = _line_number;
+	sig_type = _sig_type;
+	if ( _start != -1 )
+	{
+		start = _start;
+	}
+	if ( _end != -1 )
+	{
+		end = _end;
+		length = end - start;
+	}
+}
+
+void SIGNAL::feed_chars ( char _start_char, char _end_char )
+{
+	start_char = _start_char;
+	end_char = _end_char;
+}
+
+void SIGNAL::clear ( )
+{
+	line_number = -1;
+	sig_type = "";
+	start = -1;
+	end = -1;
+}

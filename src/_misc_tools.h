@@ -66,8 +66,9 @@ namespace misc
 	std::string getOutput ( std::string command );
 	std::vector < std::string > splitByVec ( std::string input, std::vector < int > vec );
 	
-	template < class T >
-	void print_vec ( std::vector < T > in );
+	void print_vec ( std::vector < std::string > in );
+	void print_vec ( std::vector < int > in );
+	void print_vec ( std::vector < char > in );
 	
 	template < class T >
 	std::vector < T > set_vec ( std::vector < T > in, size_t pos, T val );

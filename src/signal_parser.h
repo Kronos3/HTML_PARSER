@@ -26,7 +26,9 @@
 #define SIGNAL_PARSER_H
 
 #include "include.h"
-#include "html_config.hpp"
+#include "html_config.h"
+#include "signal.h"
+#include "html_sig.h"
 #include "signal_group.h"
 #include "signal_rewrite.h"
 #include "_misc_tools.h"

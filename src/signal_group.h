@@ -26,7 +26,9 @@
 #define SIGNAL_GROUP_H
 
 #include <iostream>
-#include "html_config.hpp"
+#include "html_config.h"
+#include "signal.h"
+#include "html_sig.h"
 
 using namespace std;
 

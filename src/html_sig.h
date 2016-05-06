@@ -1,5 +1,5 @@
 /*
- * template.h
+ * html_sig.h
  * 
  * Copyright 2016 Andrei Tumbar <atuser@Kronos>
  * 
@@ -22,29 +22,25 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
+#ifndef HTML_SIG_H
+#define HTML_SIG_H
 
-#include "include.h"
+#include <iostream>
 #include "html_config.h"
-#include "template_set.h"
-#include "body.h"
+#include "signal.h"
 
 using namespace std;
 
-class Template
+class HTML_SIG
 {
 	public:
-		vector < string > template_content;
-		vector < string > template_out;
-		string template_name;
+		HTML_CONFIG CONFIG;
+		vector < string > file;
+		vector < SIGNAL > SIGNALS;
+		vector < string > sig_types;
+		vector < vector < int > > line_start_end;
 		
-		HTML_CONFIG config;
-		
-		template_set template_vars;
-		
-		void init ( HTML_CONFIG _config, string _template_name );
-		vector < string > new_file ( body IN );
+		void load ( HTML_CONFIG _CONFIG, string _file );
 };
 
-#endif /* TEMPLATE_H */ 
+#endif /* HTML_SIG_H */ 

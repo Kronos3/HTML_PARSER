@@ -4,5 +4,6 @@ src/input
 src/output
 src/template
 __pycache__
-*~
 *.o
+*~
+*.deps
