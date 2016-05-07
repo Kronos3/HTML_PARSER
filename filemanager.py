@@ -52,8 +52,8 @@ class FileManager:
 		else:
 			__file = button.get_label ( )
 		self.notebook.remove_page ( self.labels.index ( __file ) )
-		self.tabs.remove ( self.labels.index ( __file ) );
-		self.buffers.remove ( self.labels.index ( __file ) );
+		self.tabs.remove ( self.tabs [ self.labels.index ( __file ) ] );
+		self.buffers.remove ( self.buffers [ self.labels.index ( __file ) ] );
 		self.labels.remove ( __file );
 		self.notebook.show_all ( )
 	
