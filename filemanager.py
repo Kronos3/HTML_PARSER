@@ -34,8 +34,10 @@ import filetab, project, builderset
 
 class FileManager:
 	
+	tabs = []
 	buffers = []
 	labels = []
+	file_n = []
 	
 	def __init__ ( self, _main_box ):
 		self.main_box = _main_box
@@ -55,12 +57,40 @@ class FileManager:
 		self.tabs.remove ( self.tabs [ self.labels.index ( __file ) ] );
 		self.buffers.remove ( self.buffers [ self.labels.index ( __file ) ] );
 		self.labels.remove ( __file );
+		self.file_n.remove ( button.file_name );
 		self.notebook.show_all ( )
+	
+	def changed ( self, buff ):
+		index = self.buffers.index ( buff )
+		file_buff = open ( self.file_n [ index ], "r" ).read ( )
+		text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
+		if ( text != file_buff ):
+			self.tabs [ index ].changed ( )
+		else:
+			self.tabs [ index ].save ( Gtk.Button ( ) )
+	def reload ( self ):
+		index = self.notebook.get_current_page ( )
+		__file = open ( self.file_n [ index ], "r" ).read ( )
+		buff = self.buffers [ index ]
+		buff.set_text ( __file )
+	
+	def redo ( self ):
+		index = self.notebook.get_current_page ( )
+		buff = self.buffers [ index ]
+		buff.redo ( )
+	
+	def undo ( self ):
+		index = self.notebook.get_current_page ( )
+		buff = self.buffers [ index ]
+		buff.undo ( )
 	
 	def open ( self, __file ):
 		lm = GtkSource.LanguageManager.new ( )
 		language = lm.guess_language ( __file, None )
 		buffer = GtkSource.Buffer ( )
+		buffer.can_redo ( )
+		buffer.can_undo ( )
+		
 		
 		if language:
 			buffer.set_highlight_syntax ( True )
@@ -110,6 +140,8 @@ class FileManager:
 		SOURCE.set_indent_on_tab ( True )
 		SOURCE.set_show_line_numbers ( True )
 		SOURCE.set_highlight_current_line ( True )
+		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.SPACE )
+		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB )
 		
 		fontdesc = Pango.FontDescription ( "Monospace 10.5" )
 		SOURCE.override_font ( fontdesc )
@@ -124,13 +156,12 @@ class FileManager:
 		tab = filetab.FileTab ( __file )
 		
 		tab.connect ( "clicked", self.close_file )
-		buffer.connect ( "changed", tab.changed )
+		buffer.connect ( "changed", self.changed )
 		
-		self.tabs = []
 		self.tabs.insert ( 0, tab )
-		
 		self.labels.insert ( 0, self.get_bare_name ( __file ) )
 		self.buffers.insert ( 0, buffer )
+		self.file_n.insert ( 0, __file )
 		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )

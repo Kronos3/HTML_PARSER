@@ -57,7 +57,7 @@ class FileTab ( Gtk.Button ):
 			return __in
 		return __in [ i + 1: ]
 	
-	def changed ( self, button ):
+	def changed ( self ):
 		self.set_label ( "%s*" % self.__label )
 		self.__changed__ = True
 	

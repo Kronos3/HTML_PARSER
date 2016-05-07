@@ -97,12 +97,22 @@ def open_file_sig ( button ):
 
 def save_file ( button ):
 	TAB = MAIN.project.files.tabs [ MAIN.project.files.notebook.get_current_page ( ) ]
-	buff = MAIN.project.files.buffers [ MAIN.project.files.notebook.get_current_page ( ) ]
-	text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
-	curr_file = open ( TAB.file_name, "w+" )
-	curr_file.truncate ( )
-	curr_file.write ( text )
-	TAB.save ( button )
+	if ( TAB.__changed__ ):
+		buff = MAIN.project.files.buffers [ MAIN.project.files.notebook.get_current_page ( ) ]
+		text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
+		curr_file = open ( TAB.file_name, "w+" )
+		curr_file.truncate ( )
+		curr_file.write ( text )
+		TAB.save ( button )
+
+def reload_file ( button ):
+	MAIN.project.files.reload ( )
+
+def redo ( button ):
+	MAIN.project.files.redo ( )
+
+def undo ( button ):
+	MAIN.project.files.undo ( )
 
 main_handlers = {
 "exit": Gtk.main_quit,
@@ -115,6 +125,9 @@ main_handlers = {
 "close_file_dia": close_file_dia,
 "open_file": open_file_sig,
 "save_file": save_file,
+"reload": reload_file,
+"redo": redo,
+"undo": undo,
 }
 
 global MAIN
