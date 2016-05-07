@@ -54,7 +54,7 @@ class Project:
 		self.TemplateWindow = self.builders [ "main.ui" ].get_object ( "new_temp_main" )
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
 		
-		self.MainWindow.set_icon_from_file ( "icon.svg" )
+		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
 		self.file_chooser.connect ( "key-press-event", on_key_function )
 		self.TemplateWindow.connect ( "key-press-event", on_key_function )
