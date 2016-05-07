@@ -114,6 +114,15 @@ def redo ( button ):
 def undo ( button ):
 	MAIN.project.files.undo ( )
 
+def cut ( button ):
+	MAIN.project.files.cut ( )
+
+def copy ( button ):
+	MAIN.project.files.copy ( )
+
+def paste ( button ):
+	MAIN.project.files.paste ( )
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "template": new_template,
@@ -128,6 +137,9 @@ main_handlers = {
 "reload": reload_file,
 "redo": redo,
 "undo": undo,
+"cut": cut,
+"copy": copy,
+"paste": paste
 }
 
 global MAIN

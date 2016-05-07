@@ -39,10 +39,13 @@ class FileManager:
 	labels = []
 	file_n = []
 	
+	clipboard = None
+	
 	def __init__ ( self, _main_box ):
 		self.main_box = _main_box
 		self.notebook = Gtk.Notebook ( )
 		self.main_box.add ( self.notebook )
+		self.clipboard = Gtk.Clipboard ( )
 	
 	def get_bare_name ( self, string ):
 		i = string.rfind ( "/" )
@@ -83,6 +86,21 @@ class FileManager:
 		index = self.notebook.get_current_page ( )
 		buff = self.buffers [ index ]
 		buff.undo ( )
+	
+	def cut ( self ):
+		index = self.notebook.get_current_page ( )
+		buff = self.buffers [ index ]
+		buff.cut_clipboard ( self.clipboard, buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
+	
+	def copy ( self ):
+		index = self.notebook.get_current_page ( )
+		buff = self.buffers [ index ]
+		buff.copy_clipboard ( self.clipboard )
+	
+	def paste ( self ):
+		index = self.notebook.get_current_page ( )
+		buff = self.buffers [ index ]
+		buff.paste_clipboard ( self.clipboard, buff.get_iter ( ), True )
 	
 	def open ( self, __file ):
 		lm = GtkSource.LanguageManager.new ( )

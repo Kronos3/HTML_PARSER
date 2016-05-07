@@ -54,6 +54,8 @@ class Project:
 		self.TemplateWindow = self.builders [ "main.ui" ].get_object ( "new_temp_main" )
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
 		
+		self.MainWindow.set_icon_from_file ( "icon.svg" )
+		
 		self.file_chooser.connect ( "key-press-event", on_key_function )
 		self.TemplateWindow.connect ( "key-press-event", on_key_function )
 		
@@ -70,6 +72,9 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "reload" ).add_accelerator("activate", self.accel_group, ord('r'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "redo" ).add_accelerator("activate", self.accel_group, ord('y'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "undo" ).add_accelerator("activate", self.accel_group, ord('z'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "cut" ).add_accelerator("activate", self.accel_group, ord('x'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "copy" ).add_accelerator("activate", self.accel_group, ord('c'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator("activate", self.accel_group, ord('v'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.MainWindow.add_accel_group ( self.accel_group )
 		
 		self.MainWindow.show_all ( )
