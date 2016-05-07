@@ -47,8 +47,13 @@ class FileManager:
 		return string [ i + 1: ]
 	
 	def close_file ( self, button ):
-		__file = button.get_label ( )
+		if button.__changed__:
+			__file = button.get_label ( ) [ :-1 ]
+		else:
+			__file = button.get_label ( )
 		self.notebook.remove_page ( self.labels.index ( __file ) )
+		self.tabs.remove ( self.labels.index ( __file ) );
+		self.buffers.remove ( self.labels.index ( __file ) );
 		self.labels.remove ( __file );
 		self.notebook.show_all ( )
 	
@@ -116,14 +121,16 @@ class FileManager:
 		curr_scrolled.set_hexpand ( True )
 		curr_scrolled.set_vexpand ( True )
 		
-		tab = filetab.FileTab ( self.get_bare_name ( __file ) )
+		tab = filetab.FileTab ( __file )
 		
 		tab.connect ( "clicked", self.close_file )
+		buffer.connect ( "changed", tab.changed )
 		
 		self.tabs = []
 		self.tabs.insert ( 0, tab )
 		
 		self.labels.insert ( 0, self.get_bare_name ( __file ) )
+		self.buffers.insert ( 0, buffer )
 		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )

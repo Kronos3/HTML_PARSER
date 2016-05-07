@@ -36,18 +36,31 @@ class FileTab ( Gtk.Button ):
 	
 	__image = None
 	__label = None
+	file_name = ""
+	__changed__ = False
 	
 	def __init__ ( self, label ):
-		self.__label = label
+		self.file_name = label
+		self.__label = self.get_bare_name ( label )
 		
-		super( FileTab, self ).__init__ ( label )
+		super( FileTab, self ).__init__ ( self.__label )
 		
 		self.__image = Gtk.Image.new_from_pixbuf ( Gtk.IconTheme.get_default ( ).load_icon ( "window-close", 64, 0 ) )
-		self.set_label ( label )
+		self.set_label ( self.__label )
 		
 		self.set_image ( self.__image )
 		self.set_image_position ( 2 )
-		
-	def changed ( ):
-		text = self.get_label ( )
-		self.__label.set_markup ( "<span color=\"#FFF000\">\%s</span>" % text )
+	
+	def get_bare_name ( self, __in ):
+		i = __in.rfind ( "/" )
+		if ( i == -1 ):
+			return __in
+		return __in [ i + 1: ]
+	
+	def changed ( self, button ):
+		self.set_label ( "%s*" % self.__label )
+		self.__changed__ = True
+	
+	def save ( self, button ):
+		self.set_label ( self.__label )
+		self.__changed__ = False

@@ -65,6 +65,7 @@ class Project:
 		
 		self.accel_group = Gtk.AccelGroup ( )
 		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator("activate", self.accel_group, ord('o'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "save" ).add_accelerator("activate", self.accel_group, ord('s'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "quit" ).add_accelerator("activate", self.accel_group, ord('q'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.MainWindow.add_accel_group ( self.accel_group )
 		

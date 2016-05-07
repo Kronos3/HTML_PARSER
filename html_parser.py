@@ -95,6 +95,15 @@ def open_file ( __file ):
 def open_file_sig ( button ):
 	open_file ( MAIN.project.builders [ "main.ui" ].get_object ( "filechooser" ).get_filename ( ) )
 
+def save_file ( button ):
+	TAB = MAIN.project.files.tabs [ MAIN.project.files.notebook.get_current_page ( ) ]
+	buff = MAIN.project.files.buffers [ MAIN.project.files.notebook.get_current_page ( ) ]
+	text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
+	curr_file = open ( TAB.file_name, "w+" )
+	curr_file.truncate ( )
+	curr_file.write ( text )
+	TAB.save ( button )
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "template": new_template,
@@ -105,6 +114,7 @@ main_handlers = {
 "file_changed": file_changed,
 "close_file_dia": close_file_dia,
 "open_file": open_file_sig,
+"save_file": save_file,
 }
 
 global MAIN
