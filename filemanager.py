@@ -42,8 +42,9 @@ class FileManager:
 	
 	clipboard = None
 	
-	def __init__ ( self, _main_box ):
+	def __init__ ( self, _main_box, log ):
 		self.main_box = _main_box
+		self.log = log
 		self.notebook = Gtk.Notebook ( )
 		self.main_box.add ( self.notebook )
 		self.clipboard = Gtk.Clipboard.get_default ( Gdk.DisplayManager.get ( ).get_default_display ( ) )
@@ -52,8 +53,10 @@ class FileManager:
 		i = string.rfind ( "/" )
 		return string [ i + 1: ]
 	
-	def close_file ( self, button ):
+	def close_file ( self, button, sig=True ):
 		__file = button.get_parent ( ).get_label ( )
+		if ( sig == True ):
+			self.log.set_text ( "Closed %s" % button.get_parent ( ).file_name )
 		self.file_n.remove ( button.get_parent ( ).file_name );
 		self.notebook.remove_page ( self.tabs.index ( button.get_parent ( ) ) )
 		self.tabs.remove ( self.tabs [ self.labels.index ( __file ) ] );
@@ -149,7 +152,7 @@ class FileManager:
 		sm = GtkSource.StyleSchemeManager.new ( )
 		sm.append_search_path ( os.path.dirname ( os.path.realpath ( __file__ ) ) )
 		
-		style = sm.get_scheme ( "solarizeddark" )
+		style = sm.get_scheme ( "oblivion_new" )
 		buffer.set_style_scheme ( style )
 		
 		SOURCE = GtkSource.View.new_with_buffer ( buffer )
@@ -172,6 +175,8 @@ class FileManager:
 		
 		tab = filetab.FileTab ( __file )
 		
+		tab.set_tooltip_text ( __file )
+		
 		tab.button_gtk.connect ( "clicked", self.close_file )
 		buffer.connect ( "changed", self.changed )
 		
@@ -181,6 +186,13 @@ class FileManager:
 		self.file_n.insert ( 0, __file )
 		self.sources.insert ( 0, SOURCE )
 		
+		SOURCE.set_bottom_margin ( 20 )
+		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
+		self.log.set_text ( "Opened %s" % tab.file_name )
+	
+	def get_page ( self ):
+		index = self.notebook.get_current_page ( )
+		return self.tabs [ index ]

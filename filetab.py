@@ -60,6 +60,7 @@ class FileTab ( Gtk.Box ):
 		self.set_spacing ( 6 )
 		
 		self.set_can_focus ( False )
+		self.set_can_default ( False )
 		
 		self.show_all ( )
 		
@@ -79,3 +80,6 @@ class FileTab ( Gtk.Box ):
 	def save ( self, button ):
 		self.label_gtk.set_text ( self.__label )
 		self.__changed__ = False
+	
+	def rename ( self, new_name ):
+		self.label_gtk.set_text ( self.get_bare_name ( new_name ) )

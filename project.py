@@ -30,6 +30,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('GtkSource', '3.0')
 
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
+from gi.repository.GdkPixbuf import Pixbuf
 
 import filetab, filemanager, builderset
 
@@ -41,6 +42,10 @@ def on_key_function ( widget, event ):
 class Project:
 	file_names = []
 	file_types = []
+	tab_accel = []
+	
+	config_file = ""
+	template_file = ""
 	
 	def __init__ ( self, start_doc, _dir, _type, signals ):
 		GObject.type_register ( GtkSource.View )
@@ -52,6 +57,8 @@ class Project:
 		
 		self.MainWindow = self.builders [ "main.ui" ].get_object ( "main" )
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
+		self.save_as = self.builders [ "main.ui" ].get_object ( "savedialogue" )
+		self.log = self.builders [ "main.ui" ].get_object ( "log_info" )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
@@ -59,13 +66,18 @@ class Project:
 		
 		self.file_chooser.set_transient_for ( self.MainWindow )
 		
-		self.files = filemanager.FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ) )
+		self.files = filemanager.FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ), self.log )
+		
+		self.builders [ "main.ui" ].get_object ( "new_tool" )
+		
+		#pixbuf = Gtk.IconTheme.get_default().load_icon(icon, 64, 0)
 		
 		self.open ( start_doc, _type )
 		
 		self.accel_group = Gtk.AccelGroup ( )
 		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator("activate", self.accel_group, ord('o'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "save" ).add_accelerator("activate", self.accel_group, ord('s'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "save_as" ).add_accelerator("activate", self.accel_group, ord('s'), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "quit" ).add_accelerator("activate", self.accel_group, ord('q'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "reload" ).add_accelerator("activate", self.accel_group, ord('r'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "redo" ).add_accelerator("activate", self.accel_group, ord('y'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
@@ -73,6 +85,7 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "cut" ).add_accelerator("activate", self.accel_group, ord('x'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "copy" ).add_accelerator("activate", self.accel_group, ord('c'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator("activate", self.accel_group, ord('v'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "close_doc" ).add_accelerator("activate", self.accel_group, ord('w'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
 		self.MainWindow.add_accel_group ( self.accel_group )
 		
 		self.MainWindow.show_all ( )
@@ -87,3 +100,7 @@ class Project:
 		
 		self.file_names.append ( __file )
 		self.file_types.append ( _type )
+	
+	def close ( self, button, sig=True ):
+		num = len ( self.files.tabs )
+		self.files.close ( button, sig )

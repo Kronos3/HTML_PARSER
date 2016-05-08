@@ -6,6 +6,6 @@ Name=Html Parser
 Comment=GUI for easier web creation
 Exec=/home/atuser/git/HTML_PARSER/html_parser.py >> /home/atuser/git/HTML_PARSER/html_parser.log 2>&1
 Icon=/home/atuser/git/HTML_PARSER/icon.png
-Terminal=true
+Terminal=false
 Categories=Languages;C++;Python
 Name[en_US]=html_Parser

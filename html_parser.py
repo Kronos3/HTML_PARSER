@@ -42,6 +42,7 @@ class main:
 	other = []
 	
 	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
+		start_file = os.path.dirname ( os.path.realpath ( __file__ ) ) + "/" + start_file
 		self.project = project.Project ( start_file, _dir, start_type, main_handlers )
 		
 		if ( start_type == "input" ):
@@ -93,10 +94,10 @@ def open_file ( __file ):
 	MAIN.project.file_chooser.hide ( )
 
 def open_file_sig ( button ):
-	open_file ( MAIN.project.builders [ "main.ui" ].get_object ( "filechooser" ).get_filename ( ) )
+	open_file ( MAIN.project.file_chooser.get_filename ( ) )
 
 def save_file ( button ):
-	TAB = MAIN.project.files.tabs [ MAIN.project.files.notebook.get_current_page ( ) ]
+	TAB = MAIN.project.files.get_page ( )
 	if ( TAB.__changed__ ):
 		buff = MAIN.project.files.buffers [ MAIN.project.files.notebook.get_current_page ( ) ]
 		text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
@@ -104,9 +105,11 @@ def save_file ( button ):
 		curr_file.truncate ( )
 		curr_file.write ( text )
 		TAB.save ( button )
+	MAIN.project.log.set_text ( "Saved %s" % TAB.file_name )
 
 def reload_file ( button ):
 	MAIN.project.files.reload ( )
+	MAIN.project.log.set_text ( "Reloaded %s" % TAB.file_name )
 
 def redo ( button ):
 	MAIN.project.files.redo ( )
@@ -122,6 +125,35 @@ def copy ( button ):
 
 def paste ( button ):
 	MAIN.project.files.paste ( )
+
+def close_doc ( button ):
+	TAB = MAIN.project.files.get_page ( )
+	MAIN.project.files.close_file ( TAB.button_gtk, False )
+	MAIN.project.log.set_text ( "Closed %s" % TAB.file_name )
+
+def close_other ( button ):
+	TAB = MAIN.project.files.get_page ( )
+	for t in MAIN.project.files.tabs[::-1]:
+		if ( t != TAB ):
+			MAIN.project.close_file ( t.button_gtk, False )
+	MAIN.project.log.set_text ( "Closed all files except %s" % TAB.file_name )
+
+def close_all ( button ):
+	for t in MAIN.project.files.tabs[::-1]:
+		MAIN.project.files.close_file ( t.button_gtk, False )
+	MAIN.project.log.set_text ( "Closed All Files" )
+
+def save_as_open ( button ):
+	MAIN.project.save_as.show_all ( )
+
+def save_as_close ( button ):
+	MAIN.project.save_as.hide ( )
+
+def save_as ( button ):
+	new_file = MAIN.project.save_as.get_filename ( )
+	tab = MAIN.project.files.get_page ( )
+	tab.rename ( new_file )
+	save_as_close ( button )
 
 main_handlers = {
 "exit": Gtk.main_quit,
@@ -139,7 +171,13 @@ main_handlers = {
 "undo": undo,
 "cut": cut,
 "copy": copy,
-"paste": paste
+"paste": paste,
+"close_doc": close_doc,
+"close_other": close_other,
+"close_all": close_all,
+"save_as": save_as,
+"save_as_close": save_as_close,
+"save_as_open": save_as_open,
 }
 
 global MAIN
