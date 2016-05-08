@@ -46,7 +46,7 @@ class FileTab ( Gtk.Box ):
 		
 		super( FileTab, self ).__init__ ( )
 		
-		self.__image = Gtk.Image.new_from_file ( "img/window-close.png" )
+		self.__image = Gtk.Image.new_from_stock ( "gtk-close", Gtk.IconSize.BUTTON )
 		
 		self.label_gtk = Gtk.Label ( self.__label )
 		self.new_file = new_file
