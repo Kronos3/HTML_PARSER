@@ -32,7 +32,7 @@ from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 
 import filemanager, builderset, project
 
-class FileTab ( Gtk.Button ):
+class FileTab ( Gtk.Box ):
 	
 	__image = None
 	__label = None
@@ -43,24 +43,39 @@ class FileTab ( Gtk.Button ):
 		self.file_name = label
 		self.__label = self.get_bare_name ( label )
 		
-		super( FileTab, self ).__init__ ( self.__label )
+		super( FileTab, self ).__init__ ( )
 		
-		self.__image = Gtk.Image.new_from_pixbuf ( Gtk.IconTheme.get_default ( ).load_icon ( "window-close", 64, 0 ) )
-		self.set_label ( self.__label )
+		self.__image = Gtk.Image.new_from_file ( "window-close.png" )
 		
-		self.set_image ( self.__image )
-		self.set_image_position ( 2 )
-	
+		self.label_gtk = Gtk.Label ( self.__label )
+		
+		self.add ( self.label_gtk )
+		
+		self.button_gtk = Gtk.Button ( )
+		
+		self.button_gtk.set_image ( self.__image )
+		self.button_gtk.set_image_position ( 2 )
+		self.add ( self.button_gtk )
+		
+		self.set_spacing ( 6 )
+		
+		self.set_can_focus ( False )
+		
+		self.show_all ( )
+		
 	def get_bare_name ( self, __in ):
 		i = __in.rfind ( "/" )
 		if ( i == -1 ):
 			return __in
 		return __in [ i + 1: ]
 	
+	def get_label ( self ):
+		return self.label_gtk.get_text ( )
+	
 	def changed ( self ):
-		self.set_label ( "%s*" % self.__label )
+		self.label_gtk.set_markup ( "<span color=\"#FF0000\">%s</span>" % self.__label )
 		self.__changed__ = True
 	
 	def save ( self, button ):
-		self.set_label ( self.__label )
+		self.label_gtk.set_text ( self.__label )
 		self.__changed__ = False

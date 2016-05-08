@@ -38,6 +38,7 @@ class FileManager:
 	buffers = []
 	labels = []
 	file_n = []
+	sources = []
 	
 	clipboard = None
 	
@@ -45,22 +46,19 @@ class FileManager:
 		self.main_box = _main_box
 		self.notebook = Gtk.Notebook ( )
 		self.main_box.add ( self.notebook )
-		self.clipboard = Gtk.Clipboard ( )
+		self.clipboard = Gtk.Clipboard.get_default ( Gdk.DisplayManager.get ( ).get_default_display ( ) )
 	
 	def get_bare_name ( self, string ):
 		i = string.rfind ( "/" )
 		return string [ i + 1: ]
 	
 	def close_file ( self, button ):
-		if button.__changed__:
-			__file = button.get_label ( ) [ :-1 ]
-		else:
-			__file = button.get_label ( )
-		self.notebook.remove_page ( self.labels.index ( __file ) )
+		__file = button.get_parent ( ).get_label ( )
+		self.file_n.remove ( button.get_parent ( ).file_name );
+		self.notebook.remove_page ( self.tabs.index ( button.get_parent ( ) ) )
 		self.tabs.remove ( self.tabs [ self.labels.index ( __file ) ] );
 		self.buffers.remove ( self.buffers [ self.labels.index ( __file ) ] );
 		self.labels.remove ( __file );
-		self.file_n.remove ( button.file_name );
 		self.notebook.show_all ( )
 	
 	def changed ( self, buff ):
@@ -94,13 +92,15 @@ class FileManager:
 	
 	def copy ( self ):
 		index = self.notebook.get_current_page ( )
-		buff = self.buffers [ index ]
-		buff.copy_clipboard ( self.clipboard )
+		self.buffers [ index ].copy_clipboard ( self.clipboard )
 	
 	def paste ( self ):
 		index = self.notebook.get_current_page ( )
 		buff = self.buffers [ index ]
-		buff.paste_clipboard ( self.clipboard, buff.get_iter ( ), True )
+		if ( len ( self.buffers [ index ].get_selection_bounds ( ) ) > 0 ):
+			buff.paste_clipboard ( self.clipboard, self.buffers [ index ].get_selection_bounds ( ) [ 0 ], True )
+		else:
+			buff.paste_clipboard ( self.clipboard, self.buffers [ index ].get_iter_at_mark ( self.buffers [ index ].get_insert ( ) ), True )
 	
 	def open ( self, __file ):
 		lm = GtkSource.LanguageManager.new ( )
@@ -108,7 +108,6 @@ class FileManager:
 		buffer = GtkSource.Buffer ( )
 		buffer.can_redo ( )
 		buffer.can_undo ( )
-		
 		
 		if language:
 			buffer.set_highlight_syntax ( True )
@@ -161,7 +160,7 @@ class FileManager:
 		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.SPACE )
 		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB )
 		
-		fontdesc = Pango.FontDescription ( "Monospace 10.5" )
+		fontdesc = Pango.FontDescription ( "Monospace 10" )
 		SOURCE.override_font ( fontdesc )
 		
 		SOURCE.set_tab_width ( 4 )
@@ -173,13 +172,14 @@ class FileManager:
 		
 		tab = filetab.FileTab ( __file )
 		
-		tab.connect ( "clicked", self.close_file )
+		tab.button_gtk.connect ( "clicked", self.close_file )
 		buffer.connect ( "changed", self.changed )
 		
 		self.tabs.insert ( 0, tab )
 		self.labels.insert ( 0, self.get_bare_name ( __file ) )
 		self.buffers.insert ( 0, buffer )
 		self.file_n.insert ( 0, __file )
+		self.sources.insert ( 0, SOURCE )
 		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )

@@ -51,13 +51,11 @@ class Project:
 		self.builders [ "main.ui" ].connect_signals ( signals )
 		
 		self.MainWindow = self.builders [ "main.ui" ].get_object ( "main" )
-		self.TemplateWindow = self.builders [ "main.ui" ].get_object ( "new_temp_main" )
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
 		self.file_chooser.connect ( "key-press-event", on_key_function )
-		self.TemplateWindow.connect ( "key-press-event", on_key_function )
 		
 		self.file_chooser.set_transient_for ( self.MainWindow )
 		
