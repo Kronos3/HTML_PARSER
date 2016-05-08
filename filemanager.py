@@ -44,6 +44,7 @@ class FileManager:
 		self.notebook = Gtk.Notebook ( )
 		self.main_box.add ( self.notebook )
 		self.clipboard = Gtk.Clipboard.get_default ( Gdk.DisplayManager.get ( ).get_default_display ( ) )
+		self.notebook.connect ( "page-reordered", self.reordered )
 	
 	def get_bare_name ( self, string ):
 		i = string.rfind ( "/" )
@@ -57,6 +58,19 @@ class FileManager:
 		self.tabs.remove ( self.tabs [ tab ] )
 		self.notebook.remove_page ( tab )
 		self.notebook.show_all ( )
+		self.set_reorder ( )
+	
+	def set_reorder ( self ):
+		for t in range ( len ( self.tabs ) ):
+			curr_child = self.notebook.get_nth_page ( t )
+			self.notebook.set_tab_reorderable ( curr_child, True )
+	
+	def reordered ( self, notebook, tab, num ):
+		tab_buff = self.tabs
+		self.tabs = []
+		for t in range ( len ( tab_buff ) ):
+			curr_child = self.notebook.get_nth_page ( t )
+			self.tabs.append ( self.notebook.get_tab_label ( curr_child ) )
 	
 	def changed ( self, buff ):
 		src = self.get_src_from_buff ( buff )
@@ -113,6 +127,7 @@ class FileManager:
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
 		self.log.set_text ( "Opened %s" % tab.file_name )
+		self.set_reorder ( )
 	
 	def reload ( self ):
 		index = self.notebook.get_current_page ( )
@@ -223,6 +238,7 @@ class FileManager:
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
 		self.log.set_text ( "Opened %s" % tab.file_name )
+		self.set_reorder ( )
 	
 	def get_index ( self ):
 		return self.notebook.get_current_page ( )
