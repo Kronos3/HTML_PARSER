@@ -174,6 +174,12 @@ main_handlers = {
 }
 
 global MAIN
-MAIN = main ( )
+args = sys.argv
+try:
+	args [ 1 ]
+except IndexError:
+	MAIN = main ( )
+else:
+	MAIN = main ( args [ 1 ] )
 
 Gtk.main ( )
