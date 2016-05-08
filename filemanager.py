@@ -30,15 +30,11 @@ gi.require_version('GtkSource', '3.0')
 
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 
-import filetab, project, builderset
+import filetab, project, builderset, configitem, configfile
 
 class FileManager:
 	
 	tabs = []
-	buffers = []
-	labels = []
-	file_n = []
-	sources = []
 	
 	clipboard = None
 	
@@ -57,21 +53,67 @@ class FileManager:
 		__file = button.get_parent ( ).get_label ( )
 		if ( sig == True ):
 			self.log.set_text ( "Closed %s" % button.get_parent ( ).file_name )
-		self.file_n.remove ( button.get_parent ( ).file_name );
-		self.notebook.remove_page ( self.tabs.index ( button.get_parent ( ) ) )
-		self.tabs.remove ( self.tabs [ self.labels.index ( __file ) ] );
-		self.buffers.remove ( self.buffers [ self.labels.index ( __file ) ] );
-		self.labels.remove ( __file );
+		tab = self.tabs.index ( button.get_parent ( ) )
+		self.tabs.remove ( self.tabs [ tab ] )
+		self.notebook.remove_page ( tab )
 		self.notebook.show_all ( )
 	
 	def changed ( self, buff ):
-		index = self.buffers.index ( buff )
-		file_buff = open ( self.file_n [ index ], "r" ).read ( )
+		src = self.get_src_from_buff ( buff )
+		index = self.get_index_from_buff ( buff )
+		
+		try:
+			file_buff = open ( src.file_name, "r" ).read ( )
+		except FileNotFoundError:
+			self.tabs [ index ].changed ( )
+			return
+		else:
+			file_buff = open ( src.file_name, "r" ).read ( )
 		text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
 		if ( text != file_buff ):
 			self.tabs [ index ].changed ( )
 		else:
 			self.tabs [ index ].save ( Gtk.Button ( ) )
+	
+	def new_file ( self ):
+		buffer = GtkSource.Buffer ( )
+		buffer.can_redo ( )
+		buffer.can_undo ( )
+		buffer.place_cursor ( buffer.get_start_iter ( ) )
+		SOURCE = GtkSource.View.new_with_buffer ( buffer )
+		SOURCE.set_auto_indent ( True )
+		SOURCE.set_indent_on_tab ( True )
+		SOURCE.set_show_line_numbers ( True )
+		SOURCE.set_highlight_current_line ( True )
+		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.SPACE )
+		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB )
+		
+		fontdesc = Pango.FontDescription ( "Monospace 10" )
+		SOURCE.override_font ( fontdesc )
+		
+		SOURCE.set_tab_width ( 4 )
+		
+		curr_scrolled = Gtk.ScrolledWindow ( )
+		curr_scrolled.add ( SOURCE )
+		curr_scrolled.set_hexpand ( True )
+		curr_scrolled.set_vexpand ( True )
+		
+		tab = filetab.FileTab ( "untitled", SOURCE, True )
+		
+		tab.set_tooltip_text ( "untitled" )
+		
+		tab.button_gtk.connect ( "clicked", self.close_file )
+		buffer.connect ( "changed", self.changed )
+		
+		self.tabs.insert ( 0, tab )
+		
+		SOURCE.set_bottom_margin ( 20 )
+		
+		self.notebook.prepend_page ( curr_scrolled, tab )
+		self.notebook.show_all ( )
+		self.notebook.set_current_page ( 0 )
+		self.log.set_text ( "Opened %s" % tab.file_name )
+	
 	def reload ( self ):
 		index = self.notebook.get_current_page ( )
 		__file = open ( self.file_n [ index ], "r" ).read ( )
@@ -79,31 +121,24 @@ class FileManager:
 		buff.set_text ( __file )
 	
 	def redo ( self ):
-		index = self.notebook.get_current_page ( )
-		buff = self.buffers [ index ]
-		buff.redo ( )
+		self.get_buff ( ).redo ( )
 	
 	def undo ( self ):
-		index = self.notebook.get_current_page ( )
-		buff = self.buffers [ index ]
-		buff.undo ( )
+		self.get_buff ( ).undo ( )
 	
 	def cut ( self ):
-		index = self.notebook.get_current_page ( )
-		buff = self.buffers [ index ]
+		buff = self.get_buff ( )
 		buff.cut_clipboard ( self.clipboard, buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
 	
 	def copy ( self ):
-		index = self.notebook.get_current_page ( )
-		self.buffers [ index ].copy_clipboard ( self.clipboard )
+		self.get_buff ( ).copy_clipboard ( self.clipboard )
 	
 	def paste ( self ):
-		index = self.notebook.get_current_page ( )
-		buff = self.buffers [ index ]
-		if ( len ( self.buffers [ index ].get_selection_bounds ( ) ) > 0 ):
-			buff.paste_clipboard ( self.clipboard, self.buffers [ index ].get_selection_bounds ( ) [ 0 ], True )
+		buff = self.get_buff ( )
+		if ( len ( buff.get_selection_bounds ( ) ) > 0 ):
+			buff.paste_clipboard ( self.clipboard, buff.get_selection_bounds ( ) [ 0 ], True )
 		else:
-			buff.paste_clipboard ( self.clipboard, self.buffers [ index ].get_iter_at_mark ( self.buffers [ index ].get_insert ( ) ), True )
+			buff.paste_clipboard ( self.clipboard, buff.get_iter_at_mark ( buff.get_insert ( ) ), True )
 	
 	def open ( self, __file ):
 		lm = GtkSource.LanguageManager.new ( )
@@ -173,7 +208,7 @@ class FileManager:
 		curr_scrolled.set_hexpand ( True )
 		curr_scrolled.set_vexpand ( True )
 		
-		tab = filetab.FileTab ( __file )
+		tab = filetab.FileTab ( __file, SOURCE )
 		
 		tab.set_tooltip_text ( __file )
 		
@@ -181,10 +216,6 @@ class FileManager:
 		buffer.connect ( "changed", self.changed )
 		
 		self.tabs.insert ( 0, tab )
-		self.labels.insert ( 0, self.get_bare_name ( __file ) )
-		self.buffers.insert ( 0, buffer )
-		self.file_n.insert ( 0, __file )
-		self.sources.insert ( 0, SOURCE )
 		
 		SOURCE.set_bottom_margin ( 20 )
 		
@@ -193,6 +224,21 @@ class FileManager:
 		self.notebook.set_current_page ( 0 )
 		self.log.set_text ( "Opened %s" % tab.file_name )
 	
+	def get_index ( self ):
+		return self.notebook.get_current_page ( )
+	
 	def get_page ( self ):
-		index = self.notebook.get_current_page ( )
-		return self.tabs [ index ]
+		return self.tabs [ self.get_index ( ) ]
+	
+	def get_buff ( self ):
+		return self.tabs [ self.get_index ( ) ].get_buff ( )
+	
+	def get_src_from_buff ( self, buff ):
+		for t in self.tabs:
+			if ( t.get_buff ( ) == buff ):
+				return t
+	
+	def get_index_from_buff ( self, buff ):
+		for t in self.tabs:
+			if ( t.get_buff ( ) == buff ):
+				return self.tabs.index ( t )

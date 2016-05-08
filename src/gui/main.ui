@@ -21,10 +21,12 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="close">
-                <property name="label" translatable="yes">Close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="close_file_dia" swapped="no"/>
               </object>
               <packing>
@@ -35,10 +37,12 @@
             </child>
             <child>
               <object class="GtkButton" id="open_button">
-                <property name="label" translatable="yes">Open</property>
+                <property name="label">gtk-open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="open_file" swapped="no"/>
               </object>
               <packing>
@@ -141,10 +145,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -174,6 +174,17 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkRecentFilter" id="recentfilter1">
+    <mime-types>
+      <mime-type>text/*</mime-type>
+    </mime-types>
+    <patterns>
+      <pattern>*</pattern>
+    </patterns>
+    <applications>
+      <application>gedit</application>
+    </applications>
   </object>
   <object class="GtkWindow" id="main">
     <property name="width_request">1200</property>
@@ -207,24 +218,13 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="new_template">
-                        <property name="label" translatable="yes">New from _Template</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image2</property>
-                        <property name="use_stock">False</property>
-                        <signal name="activate" handler="template" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkImageMenuItem" id="new_page">
                         <property name="label" translatable="yes">_New Page</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="page" swapped="no"/>
+                        <signal name="activate" handler="new_page" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -308,6 +308,7 @@
                         <property name="use_underline">True</property>
                         <property name="image">image15</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="close_other" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -318,6 +319,7 @@
                         <property name="use_underline">True</property>
                         <property name="image">image16</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="close_all" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -420,9 +422,10 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="edit_config">
-                        <property name="label" translatable="yes">Config</property>
+                        <property name="label" translatable="yes">_Preferences</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
                       </object>
@@ -690,20 +693,161 @@
               <object class="GtkBox" id="curr_dir_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="margin_right">6</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkRecentChooserWidget" id="recentchooser1">
-                    <property name="width_request">200</property>
+                  <object class="GtkBox" id="config_box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="limit">20</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkExpander" id="template_ex">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="expanded">True</property>
+                        <child>
+                          <object class="GtkBox" id="choose_template_box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_left">6</property>
+                            <property name="margin_right">6</property>
+                            <property name="margin_bottom">6</property>
+                            <child>
+                              <object class="GtkLabel" id="template_name">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">&lt;template&gt;</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="open_template">
+                                <property name="label">gtk-open</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_stock">True</property>
+                                <property name="always_show_image">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="template_info">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Template</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkExpander" id="input_ex">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="expanded">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="input_files_info">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Input Files</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkExpander" id="output_ex1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="expanded">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="input_files_info1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Output Files</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="filechoose_top">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="recent_info">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Open Recent</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkRecentChooserWidget" id="recentchooser">
+                        <property name="width_request">200</property>
+                        <property name="height_request">200</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="filter">recentfilter1</property>
+                        <property name="limit">40</property>
+                        <signal name="item-activated" handler="open_file_recent" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -752,7 +896,9 @@
   </object>
   <object class="GtkFileChooserDialog" id="savedialogue">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Save As...</property>
     <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
     <property name="action">save</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox2">
@@ -770,6 +916,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="save_as_close" swapped="no"/>
               </object>
               <packing>
@@ -785,6 +932,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="save_as" swapped="no"/>
               </object>
               <packing>

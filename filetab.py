@@ -39,15 +39,17 @@ class FileTab ( Gtk.Box ):
 	file_name = ""
 	__changed__ = False
 	
-	def __init__ ( self, label ):
+	def __init__ ( self, label, src, new_file=False ):
 		self.file_name = label
 		self.__label = self.get_bare_name ( label )
+		self.src = src
 		
 		super( FileTab, self ).__init__ ( )
 		
 		self.__image = Gtk.Image.new_from_file ( "window-close.png" )
 		
 		self.label_gtk = Gtk.Label ( self.__label )
+		self.new_file = new_file
 		
 		self.add ( self.label_gtk )
 		
@@ -73,6 +75,9 @@ class FileTab ( Gtk.Box ):
 	def get_label ( self ):
 		return self.label_gtk.get_text ( )
 	
+	def get_file ( self ):
+		return self.file_name
+	
 	def changed ( self ):
 		self.label_gtk.set_markup ( "<span color=\"#FF0000\">%s</span>" % self.__label )
 		self.__changed__ = True
@@ -82,4 +87,13 @@ class FileTab ( Gtk.Box ):
 		self.__changed__ = False
 	
 	def rename ( self, new_name ):
-		self.label_gtk.set_text ( self.get_bare_name ( new_name ) )
+		file_name = new_name
+		self.new_file = False
+		self.__label = self.get_bare_name ( new_name )
+		self.label_gtk.set_text ( self.__label )
+	
+	def get_buff ( self ):
+		return self.src.get_buffer ( )
+	
+	def get_src ( self ):
+		return self.src

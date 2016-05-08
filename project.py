@@ -32,7 +32,7 @@ gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
-import filetab, filemanager, builderset
+import filetab, filemanager, builderset, configitem, configfile
 
 def on_key_function ( widget, event ):
 	
@@ -42,7 +42,6 @@ def on_key_function ( widget, event ):
 class Project:
 	file_names = []
 	file_types = []
-	tab_accel = []
 	
 	config_file = ""
 	template_file = ""
@@ -75,18 +74,23 @@ class Project:
 		self.open ( start_doc, _type )
 		
 		self.accel_group = Gtk.AccelGroup ( )
-		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator("activate", self.accel_group, ord('o'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "save" ).add_accelerator("activate", self.accel_group, ord('s'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "save_as" ).add_accelerator("activate", self.accel_group, ord('s'), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "quit" ).add_accelerator("activate", self.accel_group, ord('q'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "reload" ).add_accelerator("activate", self.accel_group, ord('r'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "redo" ).add_accelerator("activate", self.accel_group, ord('y'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "undo" ).add_accelerator("activate", self.accel_group, ord('z'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "cut" ).add_accelerator("activate", self.accel_group, ord('x'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "copy" ).add_accelerator("activate", self.accel_group, ord('c'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator("activate", self.accel_group, ord('v'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
-		self.builders [ "main.ui" ].get_object ( "close_doc" ).add_accelerator("activate", self.accel_group, ord('w'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)
+		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "new_page" ).add_accelerator ( "activate", self.accel_group, ord ( 'n' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "save" ).add_accelerator ( "activate", self.accel_group, ord ( 's' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "save_as" ).add_accelerator ( "activate", self.accel_group, ord ( 's' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "quit" ).add_accelerator ( "activate", self.accel_group, ord ( 'q' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "reload" ).add_accelerator ( "activate", self.accel_group, ord ( 'r' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "redo" ).add_accelerator ( "activate", self.accel_group, ord ( 'y' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "undo" ).add_accelerator ( "activate", self.accel_group, ord ( 'z' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "cut" ).add_accelerator ( "activate", self.accel_group, ord ( 'x' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "copy" ).add_accelerator ( "activate", self.accel_group, ord ( 'c' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator ( "activate", self.accel_group, ord ( 'v' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "close_doc" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "close_all" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		
 		self.MainWindow.add_accel_group ( self.accel_group )
+		
+		self.init_switch ( )
 		
 		self.MainWindow.show_all ( )
 	
@@ -102,5 +106,15 @@ class Project:
 		self.file_types.append ( _type )
 	
 	def close ( self, button, sig=True ):
-		num = len ( self.files.tabs )
-		self.files.close ( button, sig )
+		self.files.close_doc ( button, sig )
+	
+	def init_switch ( self ):
+		for x in range ( 0, 9 ):
+			key, mod = Gtk.accelerator_parse("<Alt>%s" % x )
+			self.accel_group.connect ( key, mod, Gtk.AccelFlags.VISIBLE, self.switch )
+	
+	def switch ( self, accel_group, acceleratable, keyval, modifier ):
+		keyval -= 49
+		if keyval == 8:
+			keyval = -1
+		self.files.notebook.set_current_page ( keyval )

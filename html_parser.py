@@ -32,7 +32,7 @@ gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 
 os.chdir ( os.path.dirname ( os.path.realpath ( __file__ ) ) )
-import filetab, filemanager, builderset, project
+import filetab, filemanager, builderset, project, configitem, configfile
 
 class main:
 	
@@ -56,13 +56,9 @@ class main:
 		else:
 			raise ValueError ( "The following is not a valid file type: '%s'" % start_type )
 
-def new_template ( button ):
-	MAIN.project.builders [ "main.ui" ].get_object ( "temp_name" ).set_text ( "" )
-	MAIN.project.TemplateWindow.show_all ( )
-
 def new_page ( button ):
-	pass
-	
+	MAIN.project.files.new_file ( )
+
 def temp_ok ( button ):
 	template_name = MAIN.project.builders [ "main.ui" ].get_object ( "temp_name" ).get_text ( )
 	
@@ -98,8 +94,13 @@ def open_file_sig ( button ):
 
 def save_file ( button ):
 	TAB = MAIN.project.files.get_page ( )
+	
+	if ( TAB.new_file ):
+		save_as_open ( button )
+		return
+	
 	if ( TAB.__changed__ ):
-		buff = MAIN.project.files.buffers [ MAIN.project.files.notebook.get_current_page ( ) ]
+		buff = MAIN.project.files.tabs [ MAIN.project.files.notebook.get_current_page ( ) ].get_buff ( )
 		text = buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True )
 		curr_file = open ( TAB.file_name, "w+" )
 		curr_file.truncate ( )
@@ -151,14 +152,20 @@ def save_as_close ( button ):
 
 def save_as ( button ):
 	new_file = MAIN.project.save_as.get_filename ( )
+	file_buff = open ( new_file, "w+" )
+	buff = MAIN.project.files.get_buff ( )
+	file_buff.write ( buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
 	tab = MAIN.project.files.get_page ( )
 	tab.rename ( new_file )
 	save_as_close ( button )
 
+def open_file_recent ( dialogue ):
+	recent = dialogue.get_current_uri ( ).replace ( "file://", "" )
+	open_file ( recent )
+
 main_handlers = {
 "exit": Gtk.main_quit,
-"template": new_template,
-"page": new_page,
+"new_page": new_page,
 "temp_ok": temp_ok,
 "temp_cancel": temp_cancel,
 "open": __open__,
@@ -178,6 +185,7 @@ main_handlers = {
 "save_as": save_as,
 "save_as_close": save_as_close,
 "save_as_open": save_as_open,
+"open_file_recent": open_file_recent
 }
 
 global MAIN
