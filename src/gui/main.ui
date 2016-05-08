@@ -184,6 +184,8 @@
     </patterns>
     <applications>
       <application>gedit</application>
+      <application>glade</application>
+      <application>geany</application>
     </applications>
   </object>
   <object class="GtkWindow" id="main">
@@ -908,6 +910,7 @@
                         <property name="can_focus">False</property>
                         <property name="filter">recentfilter1</property>
                         <property name="limit">40</property>
+                        <property name="sort_type">mru</property>
                         <signal name="item-activated" handler="open_file_recent" swapped="no"/>
                       </object>
                     </child>
