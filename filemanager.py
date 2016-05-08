@@ -130,10 +130,10 @@ class FileManager:
 		self.set_reorder ( )
 	
 	def reload ( self ):
-		index = self.notebook.get_current_page ( )
-		__file = open ( self.file_n [ index ], "r" ).read ( )
-		buff = self.buffers [ index ]
+		__file = open ( self.get_page ( ).get_file ( ), "r" ).read ( )
+		buff = self.get_buff ( )
 		buff.set_text ( __file )
+		self.log.set_text ( "Reloaded %s" % self.get_page ( ).get_file ( ) )
 	
 	def redo ( self ):
 		self.get_buff ( ).redo ( )

@@ -58,6 +58,7 @@ class Project:
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
 		self.save_as = self.builders [ "main.ui" ].get_object ( "savedialogue" )
 		self.log = self.builders [ "main.ui" ].get_object ( "log_info" )
+		self.recent = self.builders [ "main.ui" ].get_object ( "recent" )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
@@ -91,6 +92,7 @@ class Project:
 		self.MainWindow.add_accel_group ( self.accel_group )
 		
 		self.init_switch ( )
+		self.get_recent ( )
 		
 		self.MainWindow.show_all ( )
 	
@@ -104,6 +106,18 @@ class Project:
 		
 		self.file_names.append ( __file )
 		self.file_types.append ( _type )
+	
+	def get_recent ( self ):
+		combo = self.builders [ "main.ui" ].get_object ( "open_recent" )
+		model = Gtk.ListStore ( str )
+		for uri in self.recent.get_uris ( ):
+			model.append ( [ uri.replace ( "file://", "" ) ] )
+		#combo.set_model ( model )
+		combo.show_all ( )
+	
+	def get_upper ( self, __in ):
+		first = __in [ 0 ].upper ( )
+		return first + __in [ 1: ]
 	
 	def close ( self, button, sig=True ):
 		self.files.close_doc ( button, sig )

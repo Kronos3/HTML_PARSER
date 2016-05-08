@@ -59,18 +59,6 @@ class main:
 def new_page ( button ):
 	MAIN.project.files.new_file ( )
 
-def temp_ok ( button ):
-	template_name = MAIN.project.builders [ "main.ui" ].get_object ( "temp_name" ).get_text ( )
-	
-	# Create the empty file
-	open(template_name, 'a').close()
-	
-	MAIN.project.files.open ( template_name )
-	MAIN.project.TemplateWindow.hide ( )
-
-def temp_cancel ( button, *args ):
-	MAIN.project.TemplateWindow.hide ( )
-
 def __open__ ( button ):
 	MAIN.project.file_chooser.show_all ( )
 
@@ -110,7 +98,6 @@ def save_file ( button ):
 
 def reload_file ( button ):
 	MAIN.project.files.reload ( )
-	MAIN.project.log.set_text ( "Reloaded %s" % TAB.file_name )
 
 def redo ( button ):
 	MAIN.project.files.redo ( )
@@ -166,8 +153,6 @@ def open_file_recent ( dialogue ):
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
-"temp_ok": temp_ok,
-"temp_cancel": temp_cancel,
 "open": __open__,
 "file_changed": file_changed,
 "close_file_dia": close_file_dia,
