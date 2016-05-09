@@ -33,7 +33,7 @@ gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
-import filetab, filemanager, builderset, configitem, configfile
+import filetab, filemanager, builderset, configitem, configfile, config
 
 def on_key_function ( widget, event ):
 	
@@ -48,9 +48,11 @@ class Project:
 	template_file = ""
 	
 	def __init__ ( self, start_doc, _dir, _type, signals ):
+		self._dir = _dir
+		
 		GObject.type_register ( GtkSource.View )
 		
-		self.builders = builderset.BuilderSet ( _dir )
+		self.builders = builderset.BuilderSet ( self._dir )
 		
 		self.builders.new ( "main.ui" )
 		self.builders [ "main.ui" ].connect_signals ( signals )
@@ -60,6 +62,12 @@ class Project:
 		self.save_as = self.builders [ "main.ui" ].get_object ( "savedialogue" )
 		self.recent = self.builders [ "main.ui" ].get_object ( "recent" )
 		self.action_notebook = self.builders [ "main.ui" ].get_object ( "actions_notebook" )
+		
+		self.input_ex = self.builders [ "main.ui" ].get_object ( "input_ex" )
+		self.output_ex = self.builders [ "main.ui" ].get_object ( "output_ex" )
+		self.variables_ex = self.builders [ "main.ui" ].get_object ( "variables_ex" )
+		self.template_name = self.builders [ "main.ui" ].get_object ( "template_name" )
+		print ( self.output_ex )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
@@ -71,8 +79,6 @@ class Project:
 		self.files = filemanager.FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ), self.log )
 		
 		self.builders [ "main.ui" ].get_object ( "new_tool" )
-		
-		#pixbuf = Gtk.IconTheme.get_default().load_icon(icon, 64, 0)
 		
 		self.open ( start_doc, _type )
 		
@@ -154,3 +160,22 @@ class Project:
 		__time = str ( datetime.datetime.now ( ).time ( ) ) [ :str ( datetime.datetime.now ( ).time ( ) ).find ( "." ) ]
 		full_text = __time + ": " + text
 		self.log.append ( [ full_text ] )
+	
+	def load_config ( self, __config=None ):
+		if ( __config == None ):
+			_config = ""
+			for i, t in enumerate ( self.types ):
+				if ( t == "config" ):
+					_config = self.file_names [ i ]
+			if config == "":
+				raise FileNotFoundError ( "You havn't open a config file so you must input one" )
+			else:
+				__config = _config
+		self.__config__ = config.Config ( self._dir, __config )
+		
+		self.template_name.set_text ( self.__config__.var_dict [ "template" ] )
+		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
+		
+		self.input_ex.add ( self.__config__.input )
+		self.output_ex.add ( self.__config__.output )
+		self.variables_ex.add ( self.__config__.variables_box )

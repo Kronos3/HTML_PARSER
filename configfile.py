@@ -34,22 +34,22 @@ from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 import filemanager, builderset, project
 
 class ConfigFile ( Gtk.Box ):
-	
-	open_button = Gtk.Button.new_from_stock ( "gtk-open" )
-	remove_button = Gtk.Button.new_from_stock ( "gtk-remove" )
-	file_label = Gtk.Label ( )
-	
 	full_path = ""
 	filename = ""
 	
 	def __init__ ( self, file_path ):
-		self.set_tooltip_text ( file_path )
-		filename = self.get_bare_name ( file_path )
-		file_label.set_text ( filename )
+		Gtk.Box.__init__ ( self, spacing=3 )
+		self.open_button = Gtk.Button.new_from_stock ( "gtk-open" )
+		self.remove_button = Gtk.Button.new_from_stock ( "gtk-remove" )
+		self.file_label = Gtk.Label ( )
+		self.file_path = file_path
+		self.set_tooltip_text ( self.file_path )
+		self.filename = self.get_bare_name ( self.file_path )
+		self.file_label.set_text ( self.filename )
 		
-		self.add ( file_label )
-		self.add ( remove_button )
-		self.add ( open_button )
+		self.add ( self.file_label )
+		self.pack_end ( self.remove_button, False, False, 0 )
+		self.pack_end ( self.open_button, False, False, 0 )
 		
 	def get_bare_name ( self, __in ):
 		i = __in.rfind ( "/" )

@@ -38,17 +38,21 @@ class ConfigItem ( Gtk.Box ):
 	items = []
 	
 	def __init__ ( self ):
+		Gtk.Box.__init__ ( self, orientation=Gtk.Orientation.VERTICAL, spacing=6 )
 		self.new_button = Gtk.Button.new_from_stock ( "gtk-new" )
 	
 	def add_items ( self, paths ):
+		paths = list ( paths )
+		print ( paths )
 		self.forall ( self.remove )
 		for p in paths:
 			self.add_item ( p )
 		self.add ( self.new_button )
+		self.show_all ( )
 	
 	def add_item ( self, file_path ):
-		buff_item = ConfigFile ( file_path )
-		items.append ( buff_item )
+		buff_item = configfile.ConfigFile ( file_path )
+		self.items.append ( buff_item )
 		self.add ( buff_item )
 	
 	def index_from_item ( self, item ):

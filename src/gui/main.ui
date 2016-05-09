@@ -772,6 +772,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkExpander" id="template_ex">
                         <property name="visible">True</property>
@@ -851,7 +852,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkExpander" id="output_ex1">
+                      <object class="GtkExpander" id="output_ex">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="expanded">True</property>
@@ -906,18 +907,7 @@
                     <property name="can_focus">True</property>
                     <property name="scrollable">True</property>
                     <child>
-                      <object class="GtkRecentChooserWidget" id="recent">
-                        <property name="width_request">200</property>
-                        <property name="height_request">200</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="filter">recentfilter1</property>
-                        <property name="limit">40</property>
-                        <property name="recent_manager">recentmanager1</property>
-                        <property name="show_tips">True</property>
-                        <property name="sort_type">mru</property>
-                        <signal name="item-activated" handler="open_file_recent" swapped="no"/>
-                      </object>
+                      <placeholder/>
                     </child>
                     <child type="tab">
                       <object class="GtkLabel" id="open_recent_info">
@@ -952,6 +942,23 @@
                     </child>
                     <child type="tab">
                       <placeholder/>
+                    </child>
+                    <child>
+                      <object class="GtkRecentChooserWidget" id="recent">
+                        <property name="width_request">200</property>
+                        <property name="height_request">200</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="filter">recentfilter1</property>
+                        <property name="limit">40</property>
+                        <property name="recent_manager">recentmanager1</property>
+                        <property name="show_tips">True</property>
+                        <property name="sort_type">mru</property>
+                        <signal name="item-activated" handler="open_file_recent" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="position">5</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>

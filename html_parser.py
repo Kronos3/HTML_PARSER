@@ -44,7 +44,7 @@ class main:
 	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
 		start_file = os.path.dirname ( os.path.realpath ( __file__ ) ) + "/" + start_file
 		self.project = project.Project ( start_file, _dir, start_type, main_handlers )
-		
+		self.project.load_config ( "src/parser.cfg" )
 		if ( start_type == "input" ):
 			self.pages.append ( start_file )
 		elif ( start_type == "template" ):

@@ -44,19 +44,26 @@ class Config:
 	var_dict = {}
 	list_vars = [ "output_files", "input_files", "title", "css", "js" ]
 	
+	variables_box = Gtk.Box ( )
 	configitems = []
 	
 	def __init__ ( self, curr_dir, config ):
-		config_file_relative = config
-		config_file_full = self.combine_paths ( curr_dir, config )
+		self.dir = curr_dir
 		
-		self.configitems = configitem.
+		self.config_file_relative = config
+		self.config_file_full = self.get_path ( config )
 		
-		for l in __file_lines:
+		self.__file_lines = open ( self.config_file_relative, "r" ).readlines ( )
+		self.input = configitem.ConfigItem ( )
+		self.output = configitem.ConfigItem ( )
+		self.title = configitem.ConfigItem ( )
+		self.css = configitem.ConfigItem ( )
+		self.js = configitem.ConfigItem ( )
+		
+		for l in self.__file_lines:
 			if l [ 0 ] == "#" or l == "" or l == "\n":
 				continue
 			var, val = l.split ( "=" )
-			
 			# Remove the whitespace
 			var = var.strip ( )
 			val = val.strip ( )
@@ -64,12 +71,21 @@ class Config:
 			self.var_dict [ var ] = val
 			
 			if var in self.list_vars:
-				self.var_list_dict [ var ] = val.split ( "," )
-			
-	def combine_paths ( self, in1, in2 ):
-		if in1 [ -1 ] == "/":
-			return in1 + in2
-		return in1 + "/" + in2
+				self.var_dict [ var ] = val.split ( "," )
+		
+		for var in self.list_vars:
+			buff = self.var_dict [ var ]
+			print ( buff )
+			exec ( "self.%s.add_items ( buff )" % var.replace ( "_files", "" ) ) 
+		
+		self.variables_box.add ( self.title )
+		self.variables_box.add ( self.css )
+		self.variables_box.add ( self.js )
+	
+	def get_path ( self, _in ):
+		if self.dir [ -1 ] == "/":
+			return self.dir + _in
+		return self.dir + "/" + _in
 	
 	def open_file ( self, path ):
 		self.__file_lines = open ( path, "r" ).readlines ( )
