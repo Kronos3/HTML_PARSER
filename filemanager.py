@@ -53,7 +53,7 @@ class FileManager:
 	def close_file ( self, button, sig=True ):
 		__file = button.get_parent ( ).get_label ( )
 		if ( sig == True ):
-			self.log.set_text ( "Closed %s" % button.get_parent ( ).file_name )
+			pass
 		tab = self.tabs.index ( button.get_parent ( ) )
 		self.tabs.remove ( self.tabs [ tab ] )
 		self.notebook.remove_page ( tab )
@@ -99,8 +99,8 @@ class FileManager:
 		SOURCE.set_indent_on_tab ( True )
 		SOURCE.set_show_line_numbers ( True )
 		SOURCE.set_highlight_current_line ( True )
-		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.SPACE )
-		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB )
+		SOURCE.set_smart_indent ( True )
+		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB | GtkSource.DrawSpacesFlags.SPACE )
 		
 		fontdesc = Pango.FontDescription ( "Monospace 10" )
 		SOURCE.override_font ( fontdesc )
@@ -126,14 +126,12 @@ class FileManager:
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
-		self.log.set_text ( "Opened %s" % tab.file_name )
 		self.set_reorder ( )
 	
 	def reload ( self ):
 		__file = open ( self.get_page ( ).get_file ( ), "r" ).read ( )
 		buff = self.get_buff ( )
 		buff.set_text ( __file )
-		self.log.set_text ( "Reloaded %s" % self.get_page ( ).get_file ( ) )
 	
 	def redo ( self ):
 		self.get_buff ( ).redo ( )
@@ -156,6 +154,10 @@ class FileManager:
 			buff.paste_clipboard ( self.clipboard, buff.get_iter_at_mark ( buff.get_insert ( ) ), True )
 	
 	def open ( self, __file ):
+		if ( self.get_index_from_file ( __file ) != None ):
+			self.notebook.set_current_page ( self.get_index_from_file ( __file ) )
+			return
+		
 		lm = GtkSource.LanguageManager.new ( )
 		language = lm.guess_language ( __file, None )
 		buffer = GtkSource.Buffer ( )
@@ -237,7 +239,6 @@ class FileManager:
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
-		self.log.set_text ( "Opened %s" % tab.file_name )
 		self.set_reorder ( )
 	
 	def get_index ( self ):
@@ -258,3 +259,8 @@ class FileManager:
 		for t in self.tabs:
 			if ( t.get_buff ( ) == buff ):
 				return self.tabs.index ( t )
+	
+	def get_index_from_file ( self, __file ):
+		for t in self.tabs:
+			if ( t.get_file ( ) == __file ):
+				return self.tabs.index ( t ) 

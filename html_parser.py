@@ -58,6 +58,7 @@ class main:
 
 def new_page ( button ):
 	MAIN.project.files.new_file ( )
+	MAIN.project.add_log ( "File untitled opened" )
 
 def __open__ ( button ):
 	MAIN.project.file_chooser.show_all ( )
@@ -75,6 +76,7 @@ def open_file ( __file ):
 	type_id = type_chooser.get_model ( ) [ type_chooser.get_active ( ) ] [ 1 ]
 	
 	MAIN.project.open ( __file, type_id )
+	MAIN.project.add_log ( "File %s opened" % __file )
 	MAIN.project.file_chooser.hide ( )
 
 def open_file_sig ( button ):
@@ -94,10 +96,11 @@ def save_file ( button ):
 		curr_file.truncate ( )
 		curr_file.write ( text )
 		TAB.save ( button )
-	MAIN.project.log.set_text ( "Saved %s" % TAB.file_name )
+	MAIN.project.add_log ( "File %s saved" % TAB.file_name )
 
 def reload_file ( button ):
 	MAIN.project.files.reload ( )
+	MAIN.project.add_log ( "File %s reloaded" % MAIN.project.files.get_page ( ).get_file ( ) )
 
 def redo ( button ):
 	MAIN.project.files.redo ( )
@@ -117,19 +120,19 @@ def paste ( button ):
 def close_doc ( button ):
 	TAB = MAIN.project.files.get_page ( )
 	MAIN.project.files.close_file ( TAB.button_gtk, False )
-	MAIN.project.log.set_text ( "Closed %s" % TAB.file_name )
+	MAIN.project.add_log ( "File %s closed" % TAB.file_name )
 
 def close_other ( button ):
 	TAB = MAIN.project.files.get_page ( )
 	for t in MAIN.project.files.tabs[::-1]:
 		if ( t != TAB ):
 			MAIN.project.close_file ( t.button_gtk, False )
-	MAIN.project.log.set_text ( "Closed all files except %s" % TAB.file_name )
+	MAIN.project.add_log ( "Closed all files except %s" % TAB.file_name )
 
 def close_all ( button ):
 	for t in MAIN.project.files.tabs[::-1]:
 		MAIN.project.files.close_file ( t.button_gtk, False )
-	MAIN.project.log.set_text ( "Closed All Files" )
+	MAIN.project.add_log ( "Closed All Files" )
 
 def save_as_open ( button ):
 	MAIN.project.save_as.show_all ( )

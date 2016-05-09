@@ -24,6 +24,7 @@
 
 
 import os, sys
+import datetime
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -57,8 +58,8 @@ class Project:
 		self.MainWindow = self.builders [ "main.ui" ].get_object ( "main" )
 		self.file_chooser = self.builders [ "main.ui" ].get_object ( "filechooser" )
 		self.save_as = self.builders [ "main.ui" ].get_object ( "savedialogue" )
-		self.log = self.builders [ "main.ui" ].get_object ( "log_info" )
 		self.recent = self.builders [ "main.ui" ].get_object ( "recent" )
+		self.action_notebook = self.builders [ "main.ui" ].get_object ( "actions_notebook" )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
@@ -66,6 +67,7 @@ class Project:
 		
 		self.file_chooser.set_transient_for ( self.MainWindow )
 		
+		self.add_messages ( )
 		self.files = filemanager.FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ), self.log )
 		
 		self.builders [ "main.ui" ].get_object ( "new_tool" )
@@ -112,7 +114,6 @@ class Project:
 		model = Gtk.ListStore ( str )
 		for uri in self.recent.get_uris ( ):
 			model.append ( [ uri.replace ( "file://", "" ) ] )
-		#combo.set_model ( model )
 		combo.show_all ( )
 	
 	def get_upper ( self, __in ):
@@ -132,3 +133,24 @@ class Project:
 		if keyval == 8:
 			keyval = -1
 		self.files.notebook.set_current_page ( keyval )
+	
+	def add_messages ( self ):
+		self.log = Gtk.ListStore ( str )
+		
+		self.treeview = Gtk.TreeView.new_with_model ( self.log )
+		
+		self.tree_renderer = Gtk.CellRendererText ( )
+		self.scrollable_treelist = Gtk.ScrolledWindow ( )
+		self.scrollable_treelist.set_vexpand ( True )
+		
+		column = Gtk.TreeViewColumn ( "Message", self.tree_renderer, text=0 )
+		self.treeview.append_column ( column )
+		
+		self.scrollable_treelist.add ( self.treeview )
+		
+		self.action_notebook.append_page ( self.scrollable_treelist, Gtk.Label ( "Messages" ) )
+	
+	def add_log ( self, text ):
+		__time = str ( datetime.datetime.now ( ).time ( ) ) [ :str ( datetime.datetime.now ( ).time ( ) ).find ( "." ) ]
+		full_text = __time + ": " + text
+		self.log.append ( [ full_text ] )

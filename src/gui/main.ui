@@ -188,6 +188,9 @@
       <application>geany</application>
     </applications>
   </object>
+  <object class="GtkRecentManager" id="recentmanager1">
+    <property name="filename">/home/atuser/.local/share/recently-used.xbel</property>
+  </object>
   <object class="GtkWindow" id="main">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">HTML Parser</property>
@@ -910,6 +913,8 @@
                         <property name="can_focus">False</property>
                         <property name="filter">recentfilter1</property>
                         <property name="limit">40</property>
+                        <property name="recent_manager">recentmanager1</property>
+                        <property name="show_tips">True</property>
                         <property name="sort_type">mru</property>
                         <signal name="item-activated" handler="open_file_recent" swapped="no"/>
                       </object>
@@ -923,6 +928,18 @@
                       <packing>
                         <property name="tab_fill">False</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>

@@ -44,14 +44,27 @@ class Config:
 	var_dict = {}
 	list_vars = [ "output_files", "input_files", "title", "css", "js" ]
 	
+	configitems = []
+	
 	def __init__ ( self, curr_dir, config ):
 		config_file_relative = config
 		config_file_full = self.combine_paths ( curr_dir, config )
 		
-		self.open_file ( config_file_full )
+		self.configitems = configitem.
+		
 		for l in __file_lines:
-			if l [ 0 ] == "#":
+			if l [ 0 ] == "#" or l == "" or l == "\n":
 				continue
+			var, val = l.split ( "=" )
+			
+			# Remove the whitespace
+			var = var.strip ( )
+			val = val.strip ( )
+			
+			self.var_dict [ var ] = val
+			
+			if var in self.list_vars:
+				self.var_list_dict [ var ] = val.split ( "," )
 			
 	def combine_paths ( self, in1, in2 ):
 		if in1 [ -1 ] == "/":
