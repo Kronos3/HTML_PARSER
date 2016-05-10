@@ -161,6 +161,12 @@ class Project:
 		full_text = __time + ": " + text
 		self.log.append ( [ full_text ] )
 	
+	def get_bare_name ( self, __in ):
+		i = __in.rfind ( "/" )
+		if ( i == -1 ):
+			return __in
+		return __in [ i + 1: ]
+	
 	def load_config ( self, __config=None ):
 		if ( __config == None ):
 			_config = ""
@@ -173,7 +179,7 @@ class Project:
 				__config = _config
 		self.__config__ = config.Config ( self._dir, __config )
 		
-		self.template_name.set_text ( self.__config__.var_dict [ "template" ] )
+		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
 		
 		self.input_ex.add ( self.__config__.input )

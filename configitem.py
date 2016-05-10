@@ -39,7 +39,8 @@ class ConfigItem ( Gtk.Box ):
 	
 	def __init__ ( self ):
 		Gtk.Box.__init__ ( self, orientation=Gtk.Orientation.VERTICAL, spacing=6 )
-		self.new_button = Gtk.Button.new_from_stock ( "gtk-new" )
+		self.new_button = Gtk.Button.new_from_icon_name ( "gtk-new", Gtk.IconSize.BUTTON )
+		self.new_button.set_always_show_image ( True )
 	
 	def add_items ( self, paths ):
 		paths = list ( paths )

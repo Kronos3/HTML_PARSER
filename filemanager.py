@@ -99,7 +99,6 @@ class FileManager:
 		SOURCE.set_indent_on_tab ( True )
 		SOURCE.set_show_line_numbers ( True )
 		SOURCE.set_highlight_current_line ( True )
-		SOURCE.set_smart_indent ( True )
 		SOURCE.set_draw_spaces ( GtkSource.DrawSpacesFlags.TAB | GtkSource.DrawSpacesFlags.SPACE )
 		
 		fontdesc = Pango.FontDescription ( "Monospace 10" )
