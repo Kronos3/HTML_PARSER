@@ -75,9 +75,7 @@ class Config:
 		
 		for var in self.list_vars:
 			buff = self.var_dict [ var ]
-			print ( buff )
 			exec ( "self.%s.add_items ( buff )" % var.replace ( "_files", "" ) ) 
-		
 		self.variables_box.add ( self.title )
 		self.variables_box.add ( self.css )
 		self.variables_box.add ( self.js )

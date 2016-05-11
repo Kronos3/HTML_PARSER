@@ -9,6 +9,7 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
+    <property name="select_multiple">True</property>
     <signal name="file-activated" handler="file_changed" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox1">
@@ -179,22 +180,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkRecentFilter" id="recentfilter1">
-    <mime-types>
-      <mime-type>text/*</mime-type>
-    </mime-types>
-    <patterns>
-      <pattern>*</pattern>
-    </patterns>
-    <applications>
-      <application>gedit</application>
-      <application>glade</application>
-      <application>geany</application>
-    </applications>
-  </object>
-  <object class="GtkRecentManager" id="recentmanager1">
-    <property name="filename">/home/atuser/.local/share/recently-used.xbel</property>
   </object>
   <object class="GtkWindow" id="main">
     <property name="can_focus">False</property>
@@ -878,6 +863,7 @@
                       <object class="GtkExpander" id="variables_ex">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="expanded">True</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -967,6 +953,12 @@
                     <child type="tab">
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1016,6 +1008,22 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkRecentFilter" id="recentfilter1">
+    <mime-types>
+      <mime-type>text/*</mime-type>
+    </mime-types>
+    <patterns>
+      <pattern>*</pattern>
+    </patterns>
+    <applications>
+      <application>gedit</application>
+      <application>glade</application>
+      <application>geany</application>
+    </applications>
+  </object>
+  <object class="GtkRecentManager" id="recentmanager1">
+    <property name="filename">/home/atuser/.local/share/recently-used.xbel</property>
   </object>
   <object class="GtkFileChooserDialog" id="savedialogue">
     <property name="can_focus">False</property>

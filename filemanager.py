@@ -262,4 +262,4 @@ class FileManager:
 	def get_index_from_file ( self, __file ):
 		for t in self.tabs:
 			if ( t.get_file ( ) == __file ):
-				return self.tabs.index ( t ) 
+				return self.tabs.index ( t )

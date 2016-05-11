@@ -31,6 +31,9 @@ gi.require_version('GtkSource', '3.0')
 
 from gi.repository import Gtk, GObject, GLib, GtkSource, Pango, Gdk
 
+global DIR
+DIR = os.getcwd ( )
+
 os.chdir ( os.path.dirname ( os.path.realpath ( __file__ ) ) )
 import filetab, filemanager, builderset, project, configitem, configfile
 
@@ -42,8 +45,10 @@ class main:
 	other = []
 	
 	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
-		start_file = os.path.dirname ( os.path.realpath ( __file__ ) ) + "/" + start_file
-		self.project = project.Project ( start_file, _dir, start_type, main_handlers )
+		self.dir = DIR
+		
+		start_file = get_dir ( self.dir + "/" + start_file )
+		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( "src/parser.cfg" )
 		if ( start_type == "input" ):
 			self.pages.append ( start_file )
@@ -56,11 +61,28 @@ class main:
 		else:
 			raise ValueError ( "The following is not a valid file type: '%s'" % start_type )
 
+def get_dir ( in_dir ):
+	in_buff = in_dir.split ( "/" )
+	out_buff = []
+	for i, x in enumerate ( in_buff ):
+		if ( x != ".." ):
+			try:
+				in_buff [ i + 1 ]
+			except IndexError:
+				out_buff.append ( x )
+			else:
+				if ( in_buff [ i + 1 ] != ".." ):
+					out_buff.append ( x )
+	return "/".join ( out_buff )
+
 def new_page ( button ):
 	MAIN.project.files.new_file ( )
 	MAIN.project.add_log ( "File untitled opened" )
 
 def __open__ ( button ):
+	if len ( MAIN.project.files.tabs ) > 0 and MAIN.project.files.get_page ( ).get_label ( ) != "untitled":
+		file_dir = get_dir ( MAIN.project.files.get_page ( ).get_file ( ) )
+		MAIN.project.file_chooser.set_current_folder ( file_dir [ :file_dir.rfind ( "/" ) ] )
 	MAIN.project.file_chooser.show_all ( )
 
 def file_changed ( file_dialog ):
@@ -80,7 +102,8 @@ def open_file ( __file ):
 	MAIN.project.file_chooser.hide ( )
 
 def open_file_sig ( button ):
-	open_file ( MAIN.project.file_chooser.get_filename ( ) )
+	for __FILE__ in MAIN.project.file_chooser.get_uris ( ):
+		open_file ( __FILE__.replace ( "file://", "" ) )
 
 def save_file ( button ):
 	TAB = MAIN.project.files.get_page ( )

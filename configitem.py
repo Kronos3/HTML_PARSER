@@ -44,7 +44,6 @@ class ConfigItem ( Gtk.Box ):
 	
 	def add_items ( self, paths ):
 		paths = list ( paths )
-		print ( paths )
 		self.forall ( self.remove )
 		for p in paths:
 			self.add_item ( p )

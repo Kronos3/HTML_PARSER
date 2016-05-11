@@ -47,7 +47,7 @@ class Project:
 	config_file = ""
 	template_file = ""
 	
-	def __init__ ( self, start_doc, _dir, _type, signals ):
+	def __init__ ( self, start_doc, _dir, _type, signals, curr_dir ):
 		self._dir = _dir
 		
 		GObject.type_register ( GtkSource.View )
@@ -67,7 +67,6 @@ class Project:
 		self.output_ex = self.builders [ "main.ui" ].get_object ( "output_ex" )
 		self.variables_ex = self.builders [ "main.ui" ].get_object ( "variables_ex" )
 		self.template_name = self.builders [ "main.ui" ].get_object ( "template_name" )
-		print ( self.output_ex )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
