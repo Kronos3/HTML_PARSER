@@ -36,6 +36,7 @@ import filemanager, builderset, project, configfile
 class ConfigItem ( Gtk.Box ):
 	
 	items = []
+	notebook = None
 	
 	def __init__ ( self ):
 		Gtk.Box.__init__ ( self, orientation=Gtk.Orientation.VERTICAL, spacing=6 )
@@ -51,7 +52,7 @@ class ConfigItem ( Gtk.Box ):
 		self.show_all ( )
 	
 	def add_item ( self, file_path ):
-		buff_item = configfile.ConfigFile ( file_path )
+		buff_item = configfile.ConfigFile ( file_path, self.notebook )
 		self.items.append ( buff_item )
 		self.add ( buff_item )
 	
@@ -60,3 +61,6 @@ class ConfigItem ( Gtk.Box ):
 			if i == item:
 				return items.index ( i )
 		return None
+	
+	def set_notebook ( self, ob ):
+		self.notebook = ob

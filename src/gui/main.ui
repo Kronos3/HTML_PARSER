@@ -902,6 +902,7 @@
                         <property name="filter">recentfilter1</property>
                         <property name="limit">40</property>
                         <property name="recent_manager">recentmanager1</property>
+                        <property name="show_not_found">False</property>
                         <property name="show_tips">True</property>
                         <property name="sort_type">mru</property>
                         <signal name="item-activated" handler="open_file_recent" swapped="no"/>
@@ -916,6 +917,12 @@
                       <packing>
                         <property name="tab_fill">False</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>

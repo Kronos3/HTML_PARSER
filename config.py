@@ -47,8 +47,9 @@ class Config:
 	variables_box = Gtk.Box ( )
 	configitems = []
 	
-	def __init__ ( self, curr_dir, config ):
+	def __init__ ( self, curr_dir, config, notebook ):
 		self.dir = curr_dir
+		self.notebook = notebook
 		
 		self.config_file_relative = config
 		self.config_file_full = self.get_path ( config )
@@ -75,6 +76,7 @@ class Config:
 		
 		for var in self.list_vars:
 			buff = self.var_dict [ var ]
+			exec ( "self.%s.set_notebook ( self.notebook )"  % var.replace ( "_files", "" ) )
 			exec ( "self.%s.add_items ( buff )" % var.replace ( "_files", "" ) ) 
 		self.variables_box.add ( self.title )
 		self.variables_box.add ( self.css )

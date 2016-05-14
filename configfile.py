@@ -37,7 +37,11 @@ class ConfigFile ( Gtk.Box ):
 	full_path = ""
 	filename = ""
 	
-	def __init__ ( self, file_path ):
+	notebook = None
+	
+	def __init__ ( self, file_path, notebook ):
+		self.notebook = notebook
+		
 		Gtk.Box.__init__ ( self, spacing=3 )
 		self.open_button = Gtk.Button.new_from_icon_name ( "gtk-open", Gtk.IconSize.BUTTON )
 		self.remove_button = Gtk.Button.new_from_icon_name ( "gtk-remove", Gtk.IconSize.BUTTON )
@@ -46,17 +50,22 @@ class ConfigFile ( Gtk.Box ):
 		self.remove_button.set_always_show_image ( True )
 		
 		self.file_label = Gtk.Label ( )
-		self.file_path = file_path
-		self.set_tooltip_text ( self.file_path )
-		self.filename = self.get_bare_name ( self.file_path )
+		self.full_path = file_path
+		self.set_tooltip_text ( self.full_path )
+		self.filename = self.get_bare_name ( self.full_path )
 		self.file_label.set_text ( self.filename )
 		
 		self.add ( self.file_label )
 		self.pack_end ( self.remove_button, False, False, 0 )
 		self.pack_end ( self.open_button, False, False, 0 )
 		
+		self.open_button.connect ( "clicked", self.open )
+		
 	def get_bare_name ( self, __in ):
 		i = __in.rfind ( "/" )
 		if ( i == -1 ):
 			return __in
 		return __in [ i + 1: ]
+	
+	def open ( self, button ):
+		self.notebook.open ( self.full_path )

@@ -166,7 +166,7 @@ class Project:
 			return __in
 		return __in [ i + 1: ]
 	
-	def load_config ( self, __config=None ):
+	def load_config ( self, notebook, __config=None ):
 		if ( __config == None ):
 			_config = ""
 			for i, t in enumerate ( self.types ):
@@ -176,7 +176,7 @@ class Project:
 				raise FileNotFoundError ( "You havn't open a config file so you must input one" )
 			else:
 				__config = _config
-		self.__config__ = config.Config ( self._dir, __config )
+		self.__config__ = config.Config ( self._dir, __config, notebook )
 		
 		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )

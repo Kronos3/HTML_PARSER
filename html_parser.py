@@ -49,7 +49,7 @@ class main:
 		
 		start_file = get_dir ( self.dir + "/" + start_file )
 		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
-		self.project.load_config ( "src/parser.cfg" )
+		self.project.load_config ( self.project.files, "parser.cfg" )
 		if ( start_type == "input" ):
 			self.pages.append ( start_file )
 		elif ( start_type == "template" ):
