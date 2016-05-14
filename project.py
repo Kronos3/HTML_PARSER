@@ -118,7 +118,7 @@ class Project:
 	
 	def get_recent ( self ):
 		recent_menu = self.builders [ "main.ui" ].get_object ( "recent_menu" )
-		for num, uri in enumerate ( self.recent.get_uris ( ) ):
+		for num, uri in enumerate ( self.recent.get_uris ( ) [ :15 ] ):
 			curr_item = Gtk.MenuItem.new_with_label ( uri.replace ( "file://", "" ) )
 			curr_item.connect ( "activate", self.open_recent )
 			recent_menu.attach ( curr_item, 0, 1, num, num + 1 )
