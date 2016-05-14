@@ -95,6 +95,8 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator ( "activate", self.accel_group, ord ( 'v' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "close_doc" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "close_all" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		key, mods = Gtk.accelerator_parse("F9")
+		self.builders [ "main.ui" ].get_object ( "make_back" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		
 		self.MainWindow.add_accel_group ( self.accel_group )
 		
@@ -115,11 +117,16 @@ class Project:
 		self.file_types.append ( _type )
 	
 	def get_recent ( self ):
-		combo = self.builders [ "main.ui" ].get_object ( "open_recent" )
-		model = Gtk.ListStore ( str )
-		for uri in self.recent.get_uris ( ):
-			model.append ( [ uri.replace ( "file://", "" ) ] )
-		combo.show_all ( )
+		recent_menu = self.builders [ "main.ui" ].get_object ( "recent_menu" )
+		for num, uri in enumerate ( self.recent.get_uris ( ) ):
+			curr_item = Gtk.MenuItem.new_with_label ( uri.replace ( "file://", "" ) )
+			curr_item.connect ( "activate", self.open_recent )
+			recent_menu.attach ( curr_item, 0, 1, num, num + 1 )
+		self.builders [ "main.ui" ].get_object ( "open_recent" ).set_menu ( recent_menu )
+		recent_menu.show_all ( )
+	
+	def open_recent ( self, item ):
+		self.open ( item.get_label ( ), "other" )
 	
 	def get_upper ( self, __in ):
 		first = __in [ 0 ].upper ( )

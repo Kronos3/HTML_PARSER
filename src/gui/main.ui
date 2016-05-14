@@ -561,26 +561,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="open_tool">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Open an existing file</property>
-                <property name="label" translatable="yes">Open</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-open</property>
-                <signal name="clicked" handler="open" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkMenuToolButton" id="open_recent">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Open a recent file</property>
                 <property name="use_underline">True</property>
+                <property name="stock_id">gtk-open</property>
+                <signal name="clicked" handler="open" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -643,7 +630,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="set2">
+              <object class="GtkSeparatorToolItem" id="sep2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
@@ -683,7 +670,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="set3">
+              <object class="GtkSeparatorToolItem" id="sep3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
@@ -966,6 +953,18 @@
                     <child type="tab">
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1015,6 +1014,11 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkMenu" id="recent_menu">
+    <property name="width_request">300</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
   </object>
   <object class="GtkRecentFilter" id="recentfilter1">
     <mime-types>

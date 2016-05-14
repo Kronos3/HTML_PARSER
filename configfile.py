@@ -60,6 +60,7 @@ class ConfigFile ( Gtk.Box ):
 		self.pack_end ( self.open_button, False, False, 0 )
 		
 		self.open_button.connect ( "clicked", self.open )
+		self.remove_button.connect ( "clicked", self.__destroy )
 		
 	def get_bare_name ( self, __in ):
 		i = __in.rfind ( "/" )
@@ -69,3 +70,6 @@ class ConfigFile ( Gtk.Box ):
 	
 	def open ( self, button ):
 		self.notebook.open ( self.full_path )
+	
+	def __destroy ( self, button ):
+		self.destroy ( )

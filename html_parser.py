@@ -43,6 +43,7 @@ class main:
 	config = ""
 	pages = []
 	other = []
+	dir = None
 	
 	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
 		self.dir = DIR
@@ -176,6 +177,20 @@ def open_file_recent ( dialogue ):
 	recent = dialogue.get_current_uri ( ).replace ( "file://", "" )
 	open_file ( recent )
 
+def write ( button ):
+	pass
+
+def make_desk ( button ):
+	os.system ( "cd %s && make desktop" % MAIN.dir )
+	MAIN.project.add_log ( "Wrote .desktop file" )
+
+def make ( button ):
+	os.system ( "cd %s && make" % MAIN.dir )
+	MAIN.project.add_log ( "Compiled and build HTML_PARSER C++ Source Code" )
+
+def write_conf ( button ):
+	pass
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
@@ -196,15 +211,17 @@ main_handlers = {
 "save_as": save_as,
 "save_as_close": save_as_close,
 "save_as_open": save_as_open,
-"open_file_recent": open_file_recent
+"open_file_recent": open_file_recent,
+"write": write,
+"make_desk": make_desk,
+"make": make,
+"write_conf": write_conf,
 }
 
 global MAIN
 args = sys.argv
-try:
-	args [ 1 ]
-except IndexError:
-	MAIN = main ( )
+if ( len ( args ) == 1 ):
+	 MAIN = main ( )
 else:
 	MAIN = main ( args [ 1 ] )
 
