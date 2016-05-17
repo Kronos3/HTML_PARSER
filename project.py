@@ -65,7 +65,7 @@ class Project:
 		
 		self.input_ex = self.builders [ "main.ui" ].get_object ( "input_ex" )
 		self.output_ex = self.builders [ "main.ui" ].get_object ( "output_ex" )
-		self.variables_ex = self.builders [ "main.ui" ].get_object ( "variables_ex" )
+		self.variables_scroll = self.builders [ "main.ui" ].get_object ( "var_scroll" )
 		self.template_name = self.builders [ "main.ui" ].get_object ( "template_name" )
 		
 		self.MainWindow.set_icon_from_file ( "icon.png" )
@@ -155,6 +155,7 @@ class Project:
 		self.scrollable_treelist = Gtk.ScrolledWindow ( )
 		self.scrollable_treelist.set_vexpand ( True )
 		
+		self.tree_renderer.set_property('editable', True)
 		column = Gtk.TreeViewColumn ( "Message", self.tree_renderer, text=0 )
 		self.treeview.append_column ( column )
 		
@@ -183,11 +184,12 @@ class Project:
 				raise FileNotFoundError ( "You havn't open a config file so you must input one" )
 			else:
 				__config = _config
-		self.__config__ = config.Config ( self._dir, __config, notebook )
+		self.__config__ = config.Config ( self._dir, __config, notebook, self.builders [ "main.ui" ].get_object ( "filechooser_new" ) )
 		
 		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
 		
 		self.input_ex.add ( self.__config__.input )
 		self.output_ex.add ( self.__config__.output )
-		self.variables_ex.add ( self.__config__.variables_box )
+		self.variables_scroll.add ( self.__config__.treeview )
+		self.variables_scroll.show_all ( )

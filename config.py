@@ -41,13 +41,20 @@ class Config:
 	__file_lines = None
 	__file = None
 	
+	notebook = None
+	open_dialogue = None
+	
 	var_dict = {}
-	list_vars = [ "output_files", "input_files", "title", "css", "js" ]
+	var_list = []
+	list_vars = [ "output_files", "input_files" ]
+	conf_vars = [ "title", "css", "js" ]
 	
 	variables_box = Gtk.Box ( )
 	configitems = []
+	rows = []
 	
-	def __init__ ( self, curr_dir, config, notebook ):
+	def __init__ ( self, curr_dir, config, notebook, open_dialogue ):
+		self.open_dialogue = open_dialogue
 		self.dir = curr_dir
 		self.notebook = notebook
 		
@@ -57,9 +64,6 @@ class Config:
 		self.__file_lines = open ( self.config_file_relative, "r" ).readlines ( )
 		self.input = configitem.ConfigItem ( )
 		self.output = configitem.ConfigItem ( )
-		self.title = configitem.ConfigItem ( )
-		self.css = configitem.ConfigItem ( )
-		self.js = configitem.ConfigItem ( )
 		
 		for l in self.__file_lines:
 			if l [ 0 ] == "#" or l == "" or l == "\n":
@@ -71,21 +75,46 @@ class Config:
 			
 			self.var_dict [ var ] = val
 			
+			self.var_list.append ( var )
+			
 			if var in self.list_vars:
 				self.var_dict [ var ] = val.split ( "," )
 		
 		for var in self.list_vars:
 			buff = self.var_dict [ var ]
 			exec ( "self.%s.set_notebook ( self.notebook )"  % var.replace ( "_files", "" ) )
+			exec ( "self.%s.set_dialogue ( self.open_dialogue )"  % var.replace ( "_files", "" ) )
 			exec ( "self.%s.add_items ( buff )" % var.replace ( "_files", "" ) ) 
-		self.variables_box.add ( self.title )
-		self.variables_box.add ( self.css )
-		self.variables_box.add ( self.js )
+		
+		self.__init_vars__ ( )
+		
+		for var in self.var_list:
+			if ( not isinstance ( self.var_dict [ var ], list ) ):
+				self.add_var ( var )
 	
 	def get_path ( self, _in ):
 		if self.dir [ -1 ] == "/":
 			return self.dir + _in
 		return self.dir + "/" + _in
+	
+	def __init_vars__ ( self ):
+		self.var_store = Gtk.ListStore ( str, str )
+		
+		self.treeview = Gtk.TreeView.new_with_model ( self.var_store )
+		
+		self.var_rend = Gtk.CellRendererText ( )
+		self.val_rend = Gtk.CellRendererText ( )
+		
+		self.val_rend.set_property('editable', True)
+		
+		column_1 = Gtk.TreeViewColumn ( "Variables", self.var_rend, text=0 )
+		column_2 = Gtk.TreeViewColumn ( "Value", self.val_rend, text=1 )
+		
+		self.treeview.append_column ( column_1 )
+		self.treeview.append_column ( column_2 )
+	
+	def add_var ( self, var ):
+		self.rows.append ( self.var_store.append ( [ var, self.var_dict [ var ] ] ) )
 	
 	def open_file ( self, path ):
 		self.__file_lines = open ( path, "r" ).readlines ( )

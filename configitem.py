@@ -37,24 +37,30 @@ class ConfigItem ( Gtk.Box ):
 	
 	items = []
 	notebook = None
+	dialogue = None
 	
 	def __init__ ( self ):
 		Gtk.Box.__init__ ( self, orientation=Gtk.Orientation.VERTICAL, spacing=6 )
 		self.new_button = Gtk.Button.new_from_icon_name ( "gtk-new", Gtk.IconSize.BUTTON )
 		self.new_button.set_always_show_image ( True )
+		
+		self.new_button.connect ( "clicked", self.open_dialogue )
 	
-	def add_items ( self, paths ):
+	def add_items ( self, paths, __def=True ):
 		paths = list ( paths )
 		self.forall ( self.remove )
 		for p in paths:
-			self.add_item ( p )
-		self.add ( self.new_button )
+			self.add_item ( p, __def )
+		
+		if ( __def ):
+			self.add ( self.new_button )
+		
 		self.show_all ( )
 	
-	def add_item ( self, file_path ):
-		buff_item = configfile.ConfigFile ( file_path, self.notebook )
-		self.items.append ( buff_item )
-		self.add ( buff_item )
+	def add_item ( self, file_path, __open = True ):
+		buff_item = configfile.ConfigFile ( file_path, self.notebook, __open )
+		self.items.insert  ( 0, buff_item )
+		self.pack_start ( buff_item, False, False, 5 )
 	
 	def index_from_item ( self, item ):
 		for i in items:
@@ -62,5 +68,11 @@ class ConfigItem ( Gtk.Box ):
 				return items.index ( i )
 		return None
 	
+	def open_dialogue ( self, button ):
+		self.dialogue.show_all ( )
+	
 	def set_notebook ( self, ob ):
 		self.notebook = ob
+	
+	def set_dialogue ( self, ob ):
+		self.dialogue = ob

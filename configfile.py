@@ -39,7 +39,7 @@ class ConfigFile ( Gtk.Box ):
 	
 	notebook = None
 	
-	def __init__ ( self, file_path, notebook ):
+	def __init__ ( self, file_path, notebook, __open=True ):
 		self.notebook = notebook
 		
 		Gtk.Box.__init__ ( self, spacing=3 )
@@ -57,7 +57,9 @@ class ConfigFile ( Gtk.Box ):
 		
 		self.add ( self.file_label )
 		self.pack_end ( self.remove_button, False, False, 0 )
-		self.pack_end ( self.open_button, False, False, 0 )
+		
+		if ( __open ):
+			self.pack_end ( self.open_button, False, False, 0 )
 		
 		self.open_button.connect ( "clicked", self.open )
 		self.remove_button.connect ( "clicked", self.__destroy )

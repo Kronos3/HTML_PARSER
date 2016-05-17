@@ -191,6 +191,21 @@ def make ( button ):
 def write_conf ( button ):
 	pass
 
+def close_file_new ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_new" ).hide ( )
+
+def open_file_new ( button ):
+	pass
+
+def open_var ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "variables_window" ).show_all ( )
+
+def close_var ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "variables_window" ).hide ( )
+
+def apply_var ( button ):
+	pass
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
@@ -216,6 +231,11 @@ main_handlers = {
 "make_desk": make_desk,
 "make": make,
 "write_conf": write_conf,
+"close_file_new": close_file_new,
+"open_file_new": open_file_new,
+"open_var": open_var,
+"close_var": close_var,
+"apply_var": apply_var,
 }
 
 global MAIN
