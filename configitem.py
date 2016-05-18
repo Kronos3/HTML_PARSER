@@ -46,9 +46,14 @@ class ConfigItem ( Gtk.Box ):
 		
 		self.new_button.connect ( "clicked", self.open_dialogue )
 	
-	def add_items ( self, paths, __def=True ):
+	def add_items ( self, paths, __def=True, remove=True ):
 		paths = list ( paths )
-		self.forall ( self.remove )
+		
+		if ( remove ):
+			self.forall ( self.remove )
+		else:
+			self.remove ( self.new_button )
+		
 		for p in paths:
 			self.add_item ( p, __def )
 		
@@ -69,6 +74,7 @@ class ConfigItem ( Gtk.Box ):
 		return None
 	
 	def open_dialogue ( self, button ):
+		self.emit ( "new_config", self )
 		self.dialogue.show_all ( )
 	
 	def set_notebook ( self, ob ):

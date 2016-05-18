@@ -52,6 +52,10 @@ class Config:
 	variables_box = Gtk.Box ( )
 	configitems = []
 	rows = []
+	row_raw = []
+	
+	current_file = {}
+	current = None
 	
 	def __init__ ( self, curr_dir, config, notebook, open_dialogue ):
 		self.open_dialogue = open_dialogue
@@ -64,6 +68,12 @@ class Config:
 		self.__file_lines = open ( self.config_file_relative, "r" ).readlines ( )
 		self.input = configitem.ConfigItem ( )
 		self.output = configitem.ConfigItem ( )
+		
+		GObject.type_register ( configitem.ConfigItem )
+		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
+		
+		self.input.connect ( "new_config", self.get_new )
+		self.output.connect ( "new_config", self.get_new )
 		
 		for l in self.__file_lines:
 			if l [ 0 ] == "#" or l == "" or l == "\n":
@@ -97,6 +107,21 @@ class Config:
 			return self.dir + _in
 		return self.dir + "/" + _in
 	
+	def get_new ( self, a, confitem ):
+		if ( confitem == self.input ):
+			self.current = "input"
+		else:
+			self.current = "output"
+	
+	def add ( self, __files ):
+		if ( self.current == "input" ):
+			self.input.add_items ( __files, remove=False )
+		else:
+			self.output.add_items ( __files, remove=False )
+	
+	def update_file ( self, var, val ):
+		self.current_file [ var ] = val
+	
 	def __init_vars__ ( self ):
 		self.var_store = Gtk.ListStore ( str, str )
 		
@@ -112,8 +137,13 @@ class Config:
 		
 		self.treeview.append_column ( column_1 )
 		self.treeview.append_column ( column_2 )
+		self.val_rend.connect ( "edited", self.vars_changes )
+	
+	def vars_changes ( self, renderer, path, new_text ):
+		self.var_store.set ( self.rows [ int ( path ) ], 1, new_text )
 	
 	def add_var ( self, var ):
+		self.row_raw.append ( [ var, self.var_dict [ var ] ] )
 		self.rows.append ( self.var_store.append ( [ var, self.var_dict [ var ] ] ) )
 	
 	def open_file ( self, path ):

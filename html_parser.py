@@ -154,7 +154,7 @@ def close_other ( button ):
 	MAIN.project.add_log ( "Closed all files except %s" % TAB.file_name )
 
 def close_all ( button ):
-	for t in MAIN.project.files.tabs[::-1]:
+	for t in MAIN.project.files.tabs [ ::-1 ]:
 		MAIN.project.files.close_file ( t.button_gtk, False )
 	MAIN.project.add_log ( "Closed All Files" )
 
@@ -195,7 +195,12 @@ def close_file_new ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_new" ).hide ( )
 
 def open_file_new ( button ):
-	pass
+	files = MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_new" ).get_uris ( )
+	for i, f in enumerate ( files ):
+		files [ i ] = f.replace ( "file://", "" )
+	MAIN.project.__config__.add ( files )
+	
+	close_file_new ( button )
 
 def open_var ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "variables_window" ).show_all ( )
