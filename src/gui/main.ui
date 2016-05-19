@@ -147,11 +147,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkImage" id="image17">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
   <object class="GtkImage" id="image18">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -404,16 +399,6 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="reload" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="rename">
-                        <property name="label">R_ename</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image17</property>
-                        <property name="use_stock">False</property>
                       </object>
                     </child>
                     <child>
@@ -916,6 +901,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="image">image1</property>
                                 <property name="always_show_image">True</property>
+                                <signal name="clicked" handler="open_template" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -1019,7 +1005,6 @@
                         <property name="can_focus">False</property>
                         <property name="filter">recentfilter1</property>
                         <property name="limit">40</property>
-                        <property name="recent_manager">recentmanager1</property>
                         <property name="show_not_found">False</property>
                         <property name="show_tips">True</property>
                         <property name="sort_type">mru</property>
@@ -1035,6 +1020,12 @@
                       <packing>
                         <property name="tab_fill">False</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child type="tab">
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -1183,7 +1174,7 @@
     </applications>
   </object>
   <object class="GtkRecentManager" id="recentmanager1">
-    <property name="filename">/home/atuser/.local/share/recently-used.xbel</property>
+    <property name="filename">~/.local/share/recently-used.xbel</property>
   </object>
   <object class="GtkFileChooserDialog" id="savedialogue">
     <property name="can_focus">False</property>
