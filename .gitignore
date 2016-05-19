@@ -6,3 +6,4 @@ src/template
 __pycache__
 *.o
 *~
+*.log
