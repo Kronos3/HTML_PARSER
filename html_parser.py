@@ -211,6 +211,10 @@ def close_var ( button ):
 def apply_var ( button ):
 	pass
 
+def open_template ( button ):
+	template_name = MAIN.project.builders [ "main.ui" ].get_object ( "template_name" ).get_tooltip_text ( )
+	MAIN.project.open ( template_name, "template" )
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
@@ -241,6 +245,7 @@ main_handlers = {
 "open_var": open_var,
 "close_var": close_var,
 "apply_var": apply_var,
+"open_template": open_template,
 }
 
 global MAIN

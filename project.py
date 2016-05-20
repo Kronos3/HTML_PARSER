@@ -184,7 +184,7 @@ class Project:
 				raise FileNotFoundError ( "You havn't open a config file so you must input one" )
 			else:
 				__config = _config
-		self.__config__ = config.Config ( self._dir, __config, notebook, self.builders [ "main.ui" ].get_object ( "filechooser_new" ) )
+		self.__config__ = config.Config ( os.getcwd ( ), __config, notebook, self.builders [ "main.ui" ].get_object ( "filechooser_new" ) )
 		
 		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
