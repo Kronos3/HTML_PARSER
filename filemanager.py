@@ -45,6 +45,7 @@ class FileManager:
 		self.main_box.add ( self.notebook )
 		self.clipboard = Gtk.Clipboard.get_default ( Gdk.DisplayManager.get ( ).get_default_display ( ) )
 		self.notebook.connect ( "page-reordered", self.reordered )
+		self.notebook.set_scrollable ( True )
 	
 	def get_bare_name ( self, string ):
 		i = string.rfind ( "/" )
