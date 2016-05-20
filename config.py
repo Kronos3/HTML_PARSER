@@ -69,18 +69,22 @@ class Config:
 		self.treeview.destroy ( )
 		self.var_store = None
 		
-		var_dict = {}
-		var_list = []
-		list_vars = [ "output_files", "input_files" ]
-		conf_vars = [ "title", "css", "js" ]
+		self.var_rend = None
+		self.val_rend = None
+		self.treeview.destroy ( )
 		
-		variables_box = Gtk.Box ( )
-		configitems = []
-		rows = []
-		row_raw = []
+		self.var_dict = {}
+		self.var_list = []
+		self.list_vars = [ "output_files", "input_files" ]
+		self.conf_vars = [ "title", "css", "js" ]
 		
-		current_file = {}
-		current = None
+		self.variables_box = Gtk.Box ( )
+		self.configitems = []
+		self.rows = []
+		self.row_raw = []
+		
+		self.current_file = {}
+		self.current = None
 	
 	def new_config ( self, config ):
 		self.config_file_relative = config

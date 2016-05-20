@@ -98,6 +98,7 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "paste" ).add_accelerator ( "activate", self.accel_group, ord ( 'v' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "close_doc" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "close_all" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
+		self.builders [ "main.ui" ].get_object ( "open_conf" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		key, mods = Gtk.accelerator_parse("F9")
 		self.builders [ "main.ui" ].get_object ( "make_back" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		
@@ -184,14 +185,15 @@ class Project:
 				if ( t == "config" ):
 					_config = self.file_names [ i ]
 			if config == "":
-				raise FileNotFoundError ( "You havn't open a config file so you must input one" )
+				raise FileNotFoundError ( "You havn't opened a config file so you must input one" )
 			else:
 				__config = _config
 		self.__config__ = config.Config ( os.getcwd ( ), __config, notebook, self.builders [ "main.ui" ].get_object ( "filechooser_new" ) )
 		self.do_config_box_reset ( )
 	
 	def do_config_box_reset ( self ):
-		self.builders [ "main.ui" ].get_object ( "var_scroll" ).forall ( self.builders [ "main.ui" ].get_object ( "var_scroll" ).remove )
+		if self.builders [ "main.ui" ].get_object ( "var_scroll" ).get_child ( ):
+			self.builders [ "main.ui" ].get_object ( "var_scroll" ).remove ( self.builders [ "main.ui" ].get_object ( "var_scroll" ).get_child ( ) )
 		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
 		
