@@ -71,6 +71,9 @@ class Project:
 		self.MainWindow.set_icon_from_file ( "icon.png" )
 		
 		self.file_chooser.connect ( "key-press-event", on_key_function )
+		self.builders [ "main.ui" ].get_object ( "filechooser_new" ).connect ( "key-press-event", on_key_function )
+		self.builders [ "main.ui" ].get_object ( "filechooser_conf" ).connect ( "key-press-event", on_key_function )
+		self.builders [ "main.ui" ].get_object ( "savedialogue" ).connect ( "key-press-event", on_key_function )
 		
 		self.file_chooser.set_transient_for ( self.MainWindow )
 		
@@ -185,7 +188,10 @@ class Project:
 			else:
 				__config = _config
 		self.__config__ = config.Config ( os.getcwd ( ), __config, notebook, self.builders [ "main.ui" ].get_object ( "filechooser_new" ) )
-		
+		self.do_config_box_reset ( )
+	
+	def do_config_box_reset ( self ):
+		self.builders [ "main.ui" ].get_object ( "var_scroll" ).forall ( self.builders [ "main.ui" ].get_object ( "var_scroll" ).remove )
 		self.template_name.set_text ( self.get_bare_name ( self.__config__.var_dict [ "template" ] ) )
 		self.template_name.set_tooltip_text ( self.__config__.get_path ( self.__config__.var_dict [ "template" ] ) )
 		

@@ -61,16 +61,34 @@ class Config:
 		self.open_dialogue = open_dialogue
 		self.dir = curr_dir
 		self.notebook = notebook
+		self.new_config ( config )
+	
+	def remove_config ( self ):
+		self.input.destroy ( )
+		self.output.destroy ( )
+		self.treeview.destroy ( )
+		self.var_store = None
 		
+		var_dict = {}
+		var_list = []
+		list_vars = [ "output_files", "input_files" ]
+		conf_vars = [ "title", "css", "js" ]
+		
+		variables_box = Gtk.Box ( )
+		configitems = []
+		rows = []
+		row_raw = []
+		
+		current_file = {}
+		current = None
+	
+	def new_config ( self, config ):
 		self.config_file_relative = config
 		self.config_file_full = self.get_path ( config )
 		
 		self.__file_lines = open ( self.config_file_relative, "r" ).readlines ( )
 		self.input = configitem.ConfigItem ( )
 		self.output = configitem.ConfigItem ( )
-		
-		GObject.type_register ( configitem.ConfigItem )
-		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
 		
 		self.input.connect ( "new_config", self.get_new )
 		self.output.connect ( "new_config", self.get_new )
@@ -149,3 +167,4 @@ class Config:
 	def open_file ( self, path ):
 		self.__file_lines = open ( path, "r" ).readlines ( )
 		self.__file = open ( path, "w" ).readlines ( )
+	

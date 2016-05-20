@@ -47,7 +47,8 @@ class main:
 	
 	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
 		self.dir = DIR
-		
+		GObject.type_register ( configitem.ConfigItem )
+		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
 		start_file = get_dir ( self.dir + "/" + start_file )
 		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( self.project.files, "parser.cfg" )
@@ -215,6 +216,18 @@ def open_template ( button ):
 	template_name = MAIN.project.builders [ "main.ui" ].get_object ( "template_name" ).get_tooltip_text ( )
 	MAIN.project.open ( template_name, "template" )
 
+def open_conf_win ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).show_all ( )
+
+def open_conf ( button ):
+	MAIN.project.__config__.remove_config ( )
+	MAIN.project.__config__.new_config ( MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).get_filename ( ) )
+	MAIN.project.do_config_box_reset ( )
+	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).hide ( )
+
+def cancel_open_conf ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).hide ( )
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
@@ -246,6 +259,9 @@ main_handlers = {
 "close_var": close_var,
 "apply_var": apply_var,
 "open_template": open_template,
+"open_conf_win": open_conf_win,
+"open_conf": open_conf,
+"cancel_open_conf": cancel_open_conf,
 }
 
 global MAIN
