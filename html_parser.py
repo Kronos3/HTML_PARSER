@@ -52,6 +52,7 @@ class main:
 		start_file = get_dir ( self.dir + "/" + start_file )
 		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( self.project.files, "parser.cfg" )
+		self.config = "parser.cfg"
 		if ( start_type == "input" ):
 			self.pages.append ( start_file )
 		elif ( start_type == "template" ):
@@ -179,7 +180,7 @@ def open_file_recent ( dialogue ):
 	open_file ( recent )
 
 def write ( button ):
-	pass
+	cmd = "src/parser -c=%s" % MAIN.config
 
 def make_desk ( button ):
 	os.system ( "cd %s && make desktop" % MAIN.dir )
@@ -219,6 +220,7 @@ def open_conf_win ( button ):
 def open_conf ( button ):
 	MAIN.project.__config__.remove_config ( )
 	MAIN.project.__config__.new_config ( MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).get_filename ( ) )
+	MAIN.config = MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).get_filename ( )
 	MAIN.project.do_config_box_reset ( )
 	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).hide ( )
 
@@ -248,6 +250,8 @@ def save_conf_dia ( button ):
 	
 	for line in MAIN.project.__config__.get_conf_out ( ):
 		curr_file.write ( line + "\n" )
+	
+	MAIN.config = curr_file
 	
 	close_conf_dia ( button )
 

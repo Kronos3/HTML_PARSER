@@ -121,12 +121,6 @@ class Config:
 		for var in self.var_list:
 			if ( not isinstance ( self.var_dict [ var ], list ) ):
 				self.add_var ( var )
-		
-		for x in self.var_list:
-			buff = self.var_dict [ x ]
-			if ( isinstance ( self.var_dict [ x ], list ) ):
-				buff = ",".join ( self.var_dict [ x ] )
-			print ( x + ":" + buff )
 	
 	def get_path ( self, _in ):
 		if self.dir [ -1 ] == "/":
