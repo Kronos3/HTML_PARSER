@@ -190,7 +190,7 @@ def make ( button ):
 	MAIN.project.add_log ( "Compiled and build HTML_PARSER C++ Source Code" )
 
 def write_conf ( button ):
-	pass
+	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).show_all ( )
 
 def close_file_new ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_new" ).hide ( )
@@ -209,9 +209,6 @@ def open_var ( button ):
 def close_var ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "variables_window" ).hide ( )
 
-def apply_var ( button ):
-	pass
-
 def open_template ( button ):
 	template_name = MAIN.project.builders [ "main.ui" ].get_object ( "template_name" ).get_tooltip_text ( )
 	MAIN.project.open ( template_name, "template" )
@@ -227,6 +224,32 @@ def open_conf ( button ):
 
 def cancel_open_conf ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_conf" ).hide ( )
+
+def add_var ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "add_var_win" ).show_all ( )
+
+def remove_var ( button ):
+	MAIN.project.__config__.remove_var ( )
+
+def close_var_sig ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "var_name" ).set_text ( "" )
+	MAIN.project.builders [ "main.ui" ].get_object ( "add_var_win" ).hide ( )
+
+def add_var_sig ( button ):
+	MAIN.project.__config__.var_dict [ MAIN.project.builders [ "main.ui" ].get_object ( "var_name" ).get_text ( ) ] = ""
+	MAIN.project.__config__.add_var ( MAIN.project.builders [ "main.ui" ].get_object ( "var_name" ).get_text ( ), True )
+	close_var_sig ( button )
+
+def close_conf_dia ( button ):
+	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).hide ( )
+
+def save_conf_dia ( button ):
+	curr_file = open ( MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( ), "w+" )
+	
+	for line in MAIN.project.__config__.get_conf_out ( ):
+		curr_file.write ( line + "\n" )
+	
+	close_conf_dia ( button )
 
 main_handlers = {
 "exit": Gtk.main_quit,
@@ -257,11 +280,16 @@ main_handlers = {
 "open_file_new": open_file_new,
 "open_var": open_var,
 "close_var": close_var,
-"apply_var": apply_var,
 "open_template": open_template,
 "open_conf_win": open_conf_win,
 "open_conf": open_conf,
 "cancel_open_conf": cancel_open_conf,
+"add_var": add_var,
+"remove_var": remove_var,
+"close_var_sig": close_var_sig,
+"add_var_sig": add_var_sig,
+"close_conf_dia": close_conf_dia,
+"save_conf_dia": save_conf_dia,
 }
 
 global MAIN

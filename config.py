@@ -80,8 +80,6 @@ class Config:
 		
 		self.variables_box = Gtk.Box ( )
 		self.configitems = []
-		self.rows = []
-		self.row_raw = []
 		
 		self.current_file = {}
 		self.current = None
@@ -123,6 +121,12 @@ class Config:
 		for var in self.var_list:
 			if ( not isinstance ( self.var_dict [ var ], list ) ):
 				self.add_var ( var )
+		
+		for x in self.var_list:
+			buff = self.var_dict [ x ]
+			if ( isinstance ( self.var_dict [ x ], list ) ):
+				buff = ",".join ( self.var_dict [ x ] )
+			print ( x + ":" + buff )
 	
 	def get_path ( self, _in ):
 		if self.dir [ -1 ] == "/":
@@ -162,13 +166,32 @@ class Config:
 		self.val_rend.connect ( "edited", self.vars_changes )
 	
 	def vars_changes ( self, renderer, path, new_text ):
-		self.var_store.set ( self.rows [ int ( path ) ], 1, new_text )
+		self.var_store.set ( self.var_store.get_iter ( path ), 1, new_text )
+		self.var_dict [ self.var_store.get_value ( self.var_store.get_iter ( path ), 0 ) ] = new_text
+		
 	
-	def add_var ( self, var ):
-		self.row_raw.append ( [ var, self.var_dict [ var ] ] )
-		self.rows.append ( self.var_store.append ( [ var, self.var_dict [ var ] ] ) )
+	def add_var ( self, var, add_to_list=False ):
+		if ( add_to_list ):
+			self.var_list.append ( var )
+			self.var_dict [ var ] = ""
+		self.var_store.append ( [ var, self.var_dict [ var ] ] )
 	
 	def open_file ( self, path ):
 		self.__file_lines = open ( path, "r" ).readlines ( )
 		self.__file = open ( path, "w" ).readlines ( )
 	
+	def remove_var ( self ):
+		model, treeiter = self.treeview.get_selection ( ).get_selected ( )
+		
+		self.var_dict.pop ( model [ treeiter ] [ 0 ], None )
+		del self.var_list [ self.var_list.index ( model [ treeiter ] [ 0 ] ) ]
+		self.var_store.remove ( treeiter )
+	
+	def get_conf_out ( self ):
+		out_buff = []
+		for x in self.var_list:
+			buff = self.var_dict [ x ]
+			if ( isinstance ( self.var_dict [ x ], list ) ):
+				buff = ",".join ( self.var_dict [ x ] )
+			out_buff.append ( x + " = " + buff )
+		return out_buff
