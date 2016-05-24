@@ -1,5 +1,6 @@
 # Ignore these:
-src/parser
+#src/parser
+html_Parser.desktop
 src/input
 src/output
 src/template
