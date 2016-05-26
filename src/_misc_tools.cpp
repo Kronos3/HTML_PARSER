@@ -25,10 +25,6 @@
 #include <iostream>
 #include "_misc_tools.h"
 
-using boost::format;
-using boost::io::group;
-using namespace boost::algorithm;
-
 /**\namespace misc
  * The strfmt namespace consists of a various collection of tools
  * to format string
