@@ -27,8 +27,6 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
 #include "file.h"
 #include "_misc_tools.h"
 #include "html_config.h"
