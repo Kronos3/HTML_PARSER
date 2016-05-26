@@ -10,6 +10,10 @@ subsystem:
 clean:
 	$(MAKE) clean -C $(SOURCEDIR)
 
+windows:
+	$(MAKE) -C $(SOURCEDIR) -f MakefileWin
+
+
 desktop:
 	# Making .desktop file
 	
