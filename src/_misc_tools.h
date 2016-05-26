@@ -30,12 +30,6 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
-
-using boost::format;
-using boost::io::group;
-using namespace boost::algorithm;
 
 namespace misc
 {
