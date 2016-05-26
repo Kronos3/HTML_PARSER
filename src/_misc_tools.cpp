@@ -222,7 +222,7 @@ namespace misc
 	
 	bool stob ( std::string in )
 	{
-		boost::algorithm::to_lower ( in );
+		std::transform(in.begin(), in.end(), in.begin(), ::tolower);
 		if ( in == "false" )
 		{
 			return false;
