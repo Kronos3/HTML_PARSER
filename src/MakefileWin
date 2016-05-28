@@ -4,7 +4,7 @@ INCDIRS = .
 CFLAGS += -Wall -g
  
 BIN = parser
-BARE = parser body file _misc_tools option optionset signal_group signal_parser signal_rewrite template template_set template_variable signal html_sig html_config
+BARE = parser body file _misc_tools option optionset signal_group sig$
  
 OBJECTS = $(patsubst %,%.o, $(BARE))
 SOURCES = $(patsubst %,%.cpp, $(BARE))
