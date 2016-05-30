@@ -30,6 +30,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 namespace misc
 {
