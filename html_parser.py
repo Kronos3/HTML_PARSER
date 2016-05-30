@@ -180,18 +180,27 @@ def open_file_recent ( dialogue ):
 	open_file ( recent )
 
 def write ( button ):
-	cmd = "src/parser -c=%s" % MAIN.config
-
+	if (platform.system() == "Windows"):
+		cmd = "src/parser.exe -c=%s" % MAIN.config
+	else:
+		cmd = "src/parser -c=%s" % MAIN.config
+	os.system(cmd)
+	MAIN.project.add_log ( "Wrote project to config: %s" % MAIN.config )
+	
 def make_desk ( button ):
-	os.system ( "cd %s && make desktop" % MAIN.dir )
+	os.system ( "cd %s && /usr/bin/make desktop" % MAIN.dir )
 	MAIN.project.add_log ( "Wrote .desktop file" )
 
 def make ( button ):
-	os.system ( "cd %s && make" % MAIN.dir )
+	if (platform.system() == "Windows"):
+		os.system ( "cd %s/src && /usr/bin/make -f MakefileWin" % MAIN.dir )
+	else:
+		os.system ( "cd %s && /usr/bin/make" % MAIN.dir )
 	MAIN.project.add_log ( "Compiled and build HTML_PARSER C++ Source Code" )
 
 def write_conf ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).show_all ( )
+	
 
 def close_file_new ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "filechooser_new" ).hide ( )
