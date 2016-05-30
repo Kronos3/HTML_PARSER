@@ -1,9 +1,6 @@
 # Ignore these:
 #src/parser
 html_Parser.desktop
-src/input
-src/output
-src/template
 __pycache__
 *.o
 *~
