@@ -43,8 +43,14 @@ class ConfigFile ( Gtk.Box ):
 		self.notebook = notebook
 		
 		Gtk.Box.__init__ ( self, spacing=3 )
-		self.open_button = Gtk.Button.new_from_icon_name ( "gtk-open", Gtk.IconSize.BUTTON )
-		self.remove_button = Gtk.Button.new_from_icon_name ( "gtk-remove", Gtk.IconSize.BUTTON )
+		self.open_button = Gtk.Button.new ()
+		self.remove_button = Gtk.Button.new ()
+		
+		self.open_icon = Gtk.Image.new_from_stock ( "gtk-open", Gtk.IconSize.BUTTON )
+		self.remove_icon = Gtk.Image.new_from_stock ( "gtk-remove", Gtk.IconSize.BUTTON )
+		
+		self.open_button.set_image (self.open_icon)
+		self.remove_button.set_image (self.remove_icon)
 		
 		self.open_button.set_always_show_image ( True )
 		self.remove_button.set_always_show_image ( True )

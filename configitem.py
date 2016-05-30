@@ -41,7 +41,10 @@ class ConfigItem ( Gtk.Box ):
 	
 	def __init__ ( self ):
 		Gtk.Box.__init__ ( self, orientation=Gtk.Orientation.VERTICAL, spacing=6 )
-		self.new_button = Gtk.Button.new_from_icon_name ( "gtk-new", Gtk.IconSize.BUTTON )
+		self.new_icon = Gtk.Image.new_from_stock ( "gtk-new", Gtk.IconSize.BUTTON )
+		self.new_button = Gtk.Button.new ()
+		self.new_button.set_image ( self.new_icon )
+		
 		self.new_button.set_always_show_image ( True )
 		
 		self.new_button.connect ( "clicked", self.open_dialogue )
