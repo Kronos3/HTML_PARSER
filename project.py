@@ -25,6 +25,7 @@
 
 import os, sys
 import datetime
+import platform
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -127,7 +128,12 @@ class Project:
 	def get_recent ( self ):
 		recent_menu = self.builders [ "main.ui" ].get_object ( "recent_menu" )
 		for num, uri in enumerate ( self.recent.get_uris ( ) [ :15 ] ):
-			curr_item = Gtk.MenuItem.new_with_label ( uri.replace ( "file://", "" ) )
+			if (platform.system()[:4] == "MSYS"):
+				name_buff = uri.replace ( "file://", "" )
+				name_buff = name_buff[1:]
+			else:
+				name_buff = uri.replace ( "file://", "" )
+			curr_item = Gtk.MenuItem.new_with_label ( name_buff )
 			curr_item.connect ( "activate", self.open_recent )
 			recent_menu.attach ( curr_item, 0, 1, num, num + 1 )
 		self.builders [ "main.ui" ].get_object ( "open_recent" ).set_menu ( recent_menu )

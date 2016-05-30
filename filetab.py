@@ -69,7 +69,9 @@ class FileTab ( Gtk.Box ):
 	def get_bare_name ( self, __in ):
 		i = __in.rfind ( "/" )
 		if ( i == -1 ):
-			return __in
+			i = __in.rfind ( "\\" )
+			if (i == -1):
+				return __in
 		return __in [ i + 1: ]
 	
 	def get_label ( self ):

@@ -23,6 +23,7 @@
 #  
 
 import os, sys
+import platform
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -170,8 +171,13 @@ class FileManager:
 		else:
 			print ( "No language found for file '%s'" % __file )
 			print ( "Using first line program" )
-			
-			buff = open ( __file, "r" ).readlines ( ) [ 0 ]
+			if (platform.system() == "Windows"):
+				if __file[0] == "/":
+					buff = open ( __file[1:], "r" ).readlines ( ) [ 0 ]
+				else:
+					buff = open ( __file, "r" ).readlines ( ) [ 0 ]
+			else:
+				buff = open ( __file, "r" ).readlines ( ) [ 0 ]
 			try:
 				buff.split ( " " ) [ 1 ]
 			except IndexError:
@@ -197,8 +203,13 @@ class FileManager:
 				language = lm.guess_language ( file_name, None )
 				buffer.set_highlight_syntax ( True )
 				buffer.set_language ( language )
-		
-		buff_txt = open ( __file ).read ( )
+		if (platform.system() == "Windows"):
+			if __file[0] == "/":
+				buff_txt = open ( __file[1:] ).read ( )
+			else:
+				buff_txt = open ( __file ).read ( )
+		else:
+			buff_txt = open ( __file ).read ( )
 		buffer.set_text ( buff_txt )
 		buffer.place_cursor ( buffer.get_start_iter ( ) )
 		sm = GtkSource.StyleSchemeManager.new ( )
