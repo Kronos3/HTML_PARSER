@@ -173,11 +173,16 @@ class FileManager:
 			print ( "Using first line program" )
 			if (platform.system() == "Windows"):
 				if __file[0] == "/":
-					buff = open ( __file[1:], "r" ).readlines ( ) [ 0 ]
+					__file_n = __file[1:]
 				else:
-					buff = open ( __file, "r" ).readlines ( ) [ 0 ]
+					__file_n = __file
 			else:
-				buff = open ( __file, "r" ).readlines ( ) [ 0 ]
+				__file_n = __file
+			buff = open(__file_n, "r+")
+			if (len(buff.readlines()) == 0):
+				buff.write ("\n")
+			buff.close()
+			buff = open(__file_n).readlines()[0]
 			try:
 				buff.split ( " " ) [ 1 ]
 			except IndexError:

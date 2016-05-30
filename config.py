@@ -23,6 +23,7 @@
 #  
 
 import os, sys
+import platform
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -136,8 +137,10 @@ class Config:
 	def add ( self, __files ):
 		if ( self.current == "input" ):
 			self.input.add_items ( __files, remove=False )
+			self.var_dict ["input_files"].append (__files[0])
 		else:
 			self.output.add_items ( __files, remove=False )
+			self.var_dict ["output_files"].append (__files[0])
 	
 	def update_file ( self, var, val ):
 		self.current_file [ var ] = val

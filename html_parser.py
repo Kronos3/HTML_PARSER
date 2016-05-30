@@ -24,6 +24,7 @@
 
 
 import os, sys
+import platform
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -180,11 +181,13 @@ def open_file_recent ( dialogue ):
 	open_file ( recent )
 
 def write ( button ):
+	print ("Writing...")
 	if (platform.system() == "Windows"):
-		cmd = "src/parser.exe -c=%s" % MAIN.config
+		cmd = ".\\\"src/parser.exe\" -c=%s" % MAIN.config
 	else:
 		cmd = "src/parser -c=%s" % MAIN.config
 	os.system(cmd)
+	print (cmd)
 	MAIN.project.add_log ( "Wrote project to config: %s" % MAIN.config )
 	
 def make_desk ( button ):
@@ -260,8 +263,8 @@ def save_conf_dia ( button ):
 	for line in MAIN.project.__config__.get_conf_out ( ):
 		curr_file.write ( line + "\n" )
 	
-	MAIN.config = curr_file
-	
+	MAIN.config = MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( )
+	curr_file.close()
 	close_conf_dia ( button )
 
 main_handlers = {

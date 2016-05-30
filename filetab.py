@@ -23,6 +23,7 @@
 #  
 
 import os, sys
+import platform
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -40,7 +41,13 @@ class FileTab ( Gtk.Box ):
 	__changed__ = False
 	
 	def __init__ ( self, label, src, new_file=False ):
-		self.file_name = label
+		if (platform.system() == "Windows"):
+			if label [0] == "/":
+				self.file_name = label[1:]
+			else:
+				self.file_name = label
+		else:
+			self.file_name = label
 		self.__label = self.get_bare_name ( label )
 		self.src = src
 		
