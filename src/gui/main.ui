@@ -214,11 +214,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkImage" id="image12">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
   <object class="GtkImage" id="image13">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -680,17 +675,6 @@
                       <object class="GtkSeparatorMenuItem" id="build_set1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="make_back">
-                        <property name="label" translatable="yes">_Compile backend C++</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image12</property>
-                        <property name="use_stock">False</property>
-                        <signal name="activate" handler="make" swapped="no"/>
                       </object>
                     </child>
                     <child>
