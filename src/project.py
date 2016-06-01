@@ -101,7 +101,6 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "close_all" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "open_conf" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		key, mods = Gtk.accelerator_parse ( "F9" )
-		self.builders [ "main.ui" ].get_object ( "make_back" ).add_accelerator ( "activate", self.accel_group, key, mods, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "make_desk" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "write_conf" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		f5_key, f5_mods = Gtk.accelerator_parse ( "F5" )

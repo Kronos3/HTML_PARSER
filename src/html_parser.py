@@ -46,7 +46,7 @@ class main:
 	other = []
 	dir = None
 	
-	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
+	def __init__ ( self, start_file="htmlparser.py", _dir="gui", start_type="input" ):
 		self.dir = DIR
 		GObject.type_register ( configitem.ConfigItem )
 		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
