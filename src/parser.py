@@ -25,7 +25,7 @@
 import sys
 import parserconfig
 
-class HtmlParser:
+class Parser:
 	
 	config    =  None
 	in_file   =  ""
@@ -51,7 +51,7 @@ class HtmlParser:
 			for esc in esc_strs:
 				indent = self.get_indent(buff_line)
 				buff_line =  self.parse (buff_line.strip())
-				print (buff_line)
+				self.out_file.append (buff_line)
 	
 	def get_indent (self, string):
 		for num, x in enumerate (string):
@@ -197,4 +197,4 @@ class HtmlParser:
 
 if __name__ == '__main__':
 	b_conf = parserconfig.ParserConfig (sys.argv[1])
-	buff = HtmlParser (b_conf, sys.argv[2])
+	buff = Parser (b_conf, sys.argv[2])
