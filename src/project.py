@@ -48,7 +48,7 @@ class Project:
 	config_file = ""
 	template_file = ""
 	
-	def __init__ ( self, start_doc, _dir, _type, signals, curr_dir ):
+	def __init__ ( self, _dir, _type, signals, curr_dir ):
 		self._dir = _dir
 		
 		GObject.type_register ( GtkSource.View )
@@ -82,8 +82,6 @@ class Project:
 		self.files = filemanager.FileManager ( self.builders [ "main.ui" ].get_object ( "main_box" ), self.log )
 		
 		self.builders [ "main.ui" ].get_object ( "new_tool" )
-		
-		self.open ( start_doc, _type )
 		
 		self.accel_group = Gtk.AccelGroup ( )
 		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )

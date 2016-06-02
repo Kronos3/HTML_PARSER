@@ -46,24 +46,13 @@ class main:
 	other = []
 	dir = None
 	
-	def __init__ ( self, start_file="htmlparser.py", _dir="gui", start_type="input" ):
+	def __init__ ( self, _dir="gui", start_type="input" ):
 		self.dir = DIR
 		GObject.type_register ( configitem.ConfigItem )
 		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
-		start_file = get_dir ( self.dir + "/" + start_file )
-		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
+		self.project = project.Project ( _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( self.project.files, "parser.cfg" )
 		self.config = "parser.cfg"
-		if ( start_type == "input" ):
-			self.pages.append ( start_file )
-		elif ( start_type == "template" ):
-			self.template = start_file
-		elif ( start_type == "config" ):
-			self.config = start_file
-		elif ( start_type == "other" ):
-			self.other.append ( start_file )
-		else:
-			raise ValueError ( "The following is not a valid file type: '%s'" % start_type )
 
 def get_dir ( in_dir ):
 	in_buff = in_dir.split ( "/" )
@@ -311,8 +300,9 @@ main_handlers = {
 global MAIN
 args = sys.argv
 if ( len ( args ) == 1 ):
-	 MAIN = main ( )
+	 MAIN = main ()
+	 open_file ("template.py")
 else:
-	MAIN = main ( args [ 1 ] )
-
+	MAIN = main ()
+	open_file (args [ 1 ])
 Gtk.main ( )
