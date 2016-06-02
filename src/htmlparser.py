@@ -22,29 +22,41 @@
 #  
 #  
 
+import sys
+import parserconfig
 
 class HtmlParser:
 	
-	config = None
-	in_file = ""
-	out_file = []
+	config    =  None
+	in_file   =  ""
+	out_file  =  []
 	
 	def __init__ (self, config, in_file):
+		if not isinstance (config, parserconfig.ParserConfig):
+			raise TypeError ("Arguments 'config' is not an instance of ParserConfig")
+		
 		self.in_file = in_file
-		self.config = config
+		self.config  = config
 		
 		file_b = open(in_file, "r").readlines()
 		
-		for line in file_b:
-			buff_line = line
+		for num, line in enumerate (file_b):
+			buff_line = line.replace ("\n", "")
 			
-			get_esc_start = [c.start() for c in re.finditer(self.config["start_esc"], line)]
-			get_esc_end = [c.start() for c in re.finditer(self.config["end_esc"], line)]
+			get_esc_start =  self.get_iters (buff_line, self.config["start_esc"])
+			get_esc_end   =  self.get_iters (buff_line, self.config["end_esc"])
 			
-			esc_strs = self.get_str (line, get_esc_start, get_esc_end)
+			esc_strs      =  self.get_str (buff_line, get_esc_start, get_esc_end)
 			
 			for esc in esc_strs:
-				buff_line = self.parse (buff_line)
+				indent = self.get_indent(buff_line)
+				buff_line =  self.parse (buff_line.strip())
+				print (buff_line)
+	
+	def get_indent (self, string):
+		for num, x in enumerate (string):
+			if x != ' ':
+				return num
 	
 	def get_str (self, string, ls_one, ls_two):
 		if len(ls_one) != len(ls_two):
@@ -61,8 +73,128 @@ class HtmlParser:
 		
 		return out_buff
 	
-	def parse (self, string):
-		in_esc = False
-		curr_esc = None
+	def get_esc_s (self):
+		return [self.config["start_esc"], self.config["start_class"], self.config["start_id"], self.config["start_style"]]
+	
+	def get_esc_e (self):
+		return [self.config["end_esc"], self.config["end_class"], self.config["end_id"], self.config["end_style"]]
+	
+	def get_start (self, c):
+		if (c == self.config["start_esc"]):
+			return "esc"
+		if (c == self.config["start_class"]):
+			return "class"
+		if (c == self.config["start_id"]):
+			return "id"
+		if (c == self.config["start_style"]):
+			return "style"
+	
+	def get_end (self, c):
+		if (c == self.config["end_esc"]):
+			return "esc"
+		if (c == self.config["end_class"]):
+			return "class"
+		if (c == self.config["end_id"]):
+			return "id"
+		if (c == self.config["end_style"]):
+			return "style"
+	
+	def get_t (self, c, _def="start"):
+		exec ("b_b = self.get_esc_%s ()" % _def[0])
+		if b_b:
+			exec ("return \"%s_\" self.get_%s (c)" % _def)
+		if _def == "start":
+			exec ("return \"start_\" + self.get_start (c)")
+		if _def == "end":
+			exec ("return \"end_\" + self.get_end (c)")
+	
+	def get_sigs (self, string):
+		# Return a list with following contents:
+		# 0: class  =  [ (start, end), (start, end), (start, end)]
+		# 1: id     =  [ (start, end), (start, end), (start, end)]
+		# 2: style  =  [ (start, end), (start, end), (start, end)]
+		# So it will look like this:
+		#              [class, id, style]
+		
+		__in      = {"class": False, "id": False, "style": False}
+		
+		_class    = []
+		_id       = []
+		_style    = []
+		_esc      = []
+		
 		esc = False
 		
+		b_start = 0
+		b_end = 0
+		
+		for num, c in enumerate (string):
+			t = self.get_start (c)
+			if t == "esc":
+				esc = True
+				continue
+			
+			if not esc:
+				continue
+			
+			try:
+				list(__in.keys())[list(__in.values()).index(True)]
+			except ValueError:
+				pass
+			else:
+				_type = self.get_end (c)
+				if _type:
+					if _type == "esc":
+						continue
+					if _type == list(__in.keys())[list(__in.values()).index(True)] and esc:
+						b_end = num + 1
+						exec ("_%s.append ((b_start, b_end))" % _type)
+						
+						__in [_type]  = False
+						b_list        = []
+					continue
+			
+			# Not in esc
+			if self.get_start (c):
+				_type         =  self.get_start (c)
+				__in [_type]  =  True
+				b_start = num
+		
+		return [_class, _id, _style]
+	
+	def get_content (self, _type, string):
+		return "%s=\"%s\"" % (_type, string[1:-1])
+	
+	def parse (self, __string):
+		string = __string
+		
+		_class, _id, _style = self.get_sigs (string)
+		
+		add = 0
+		
+		for x in _class:
+			string = string [:x[0]+add] + self.get_content ("class", string[x[0]+add:x[1]+add]) + string[x[1]+add:]
+			add += 6
+		
+		for x in _id:
+			string = string [:x[0]+add] + self.get_content ("id", string[x[0]+add:x[1]+add]) + string[x[1]+add:]
+			add += 3
+		
+		for x in _style:
+			string = string [:x[0]+add] + self.get_content ("style", string[x[0]+add:x[1]+add]) + string[x[1]+add:]
+			add += 6
+		
+		return string
+	
+	def get_iters (self, string, char):
+		b_out = []
+		
+		for num, c in enumerate (string):
+			if (c == char):
+				b_out.append (num)
+		
+		return b_out
+
+if __name__ == '__main__':
+	b_conf = parserconfig.ParserConfig (sys.argv[1])
+	buff = HtmlParser (b_conf, sys.argv[2])

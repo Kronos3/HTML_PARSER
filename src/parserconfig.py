@@ -36,11 +36,10 @@ class ParserConfig:
 		self.__file = cfg_file
 		self.lines = open(self.__file, "r").readlines()
 		
-		for (line in self.lines):
-			if (line[0] == "#"):
+		for line in self.lines:
+			if (line[0] == "#" or not line.strip()):
 				continue
-			
-			var, val = line.split ("=")
+			var, val = line.replace("\n", "").split ("=")
 			var = var.strip()
 			val = val.strip()
 			
@@ -50,4 +49,8 @@ class ParserConfig:
 			self.var_list.append (var)
 			self.var_dict[var] = val
 	def __getitem__ (self, var):
+		try:
+			self.var_dict[var]
+		except KeyError:
+			return None
 		return self.var_dict[var]
