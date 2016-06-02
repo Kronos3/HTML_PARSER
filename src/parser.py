@@ -33,7 +33,7 @@ class Parser:
 	
 	def __init__ (self, config, in_file):
 		if not isinstance (config, parserconfig.ParserConfig):
-			raise TypeError ("Arguments 'config' is not an instance of ParserConfig")
+			raise TypeError ("Argument 'config' is not an instance of ParserConfig")
 		
 		self.in_file = in_file
 		self.config  = config
