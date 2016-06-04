@@ -130,11 +130,16 @@ class Parser:
 		_esc      = []
 		
 		esc = False
+		quote = False
 		
 		b_start = 0
 		b_end = 0
 		
 		for num, c in enumerate (string):
+			if (c == "\""):
+				quote = not quote
+			if quote:
+				continue
 			t = self.get_start (c)
 			if t == "esc":
 				esc = True
@@ -194,6 +199,7 @@ class Parser:
 	
 	def get_iters (self, string, char):
 		b_out = []
+		esc = False
 		
 		for num, c in enumerate (string):
 			if (c == char):
