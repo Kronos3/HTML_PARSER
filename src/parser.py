@@ -50,7 +50,7 @@ class Parser:
 			
 			for esc in esc_strs:
 				indent = self.get_indent(buff_line)
-				buff_line =  self.parse (buff_line.strip())
+				buff_line =  self.parse (buff_line)
 				self.out_file.append (buff_line)
 	
 	def get_indent (self, string):

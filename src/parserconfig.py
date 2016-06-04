@@ -44,7 +44,7 @@ class ParserConfig:
 			val = val.strip()
 			
 			if ("," in val):
-				val = val.split (",")
+				val = list(filter (None, val.split (",")))
 			
 			self.var_list.append (var)
 			self.var_dict[var] = val

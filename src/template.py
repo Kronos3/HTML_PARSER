@@ -34,27 +34,78 @@ class Template:
 	# Format looks like this:
 	# [(variable_name, file, line_number, indent)]
 	pointers = []
+	parsed = []
+	
+	# Vars
+	_vars = {}
 	
 	def __init__ (self, config):
 		if not isinstance (config, parserconfig.ParserConfig):
 			raise TypeError ("Argument 'config' is not an instance of ParserConfig")
 		
 		self.config = config
-		template_file = open(self.config["template"], "r").readlines ()
-		
-		for num,line in enumerate (template_file):
+		self.template_file = open(self.config["template"], "r").readlines ()
+		for num,line in enumerate (self.template_file):
 			curr_indent = self.get_indent (line)
 			if (line[curr_indent] == "["):
 				name = line.strip()[1:-1]
 				__file = self.config[name]
 				buff_tup = (name, __file, num, curr_indent)
-				print (buff_tup)
 				self.pointers.append (buff_tup)
+		
+		for var in self.pointers:
+			self._vars [var[0]] = var[2]
 	
 	def get_indent (self, string):
 		for num, x in enumerate (string):
 			if x != ' ':
 				return num
+	
+	def insert (self, original, num, insert):
+		original.pop (num)
+		if (isinstance (insert, list)):
+			original[num:num] = insert
+			return original
+		
+		original.insert (num, insert)
+		return original
+	
+	def create_js (self, files):
+		out = []
+		for f in files:
+			out.append ("<script type=\"text/javascript\" src=\"%s\"></script>" % f)
+		return out
+	
+	def create_css (self, files):
+		out = []
+		for f in files:
+			out.append ("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" />" % f)
+		return out
+	
+	def get_body (self, file_lines, title):
+		buff = self.template_file
+		
+		for key in reversed (self.pointers):
+			
+			if (key[0] == "BODY"):
+				buff = self.insert (buff, key[2], file_lines)
+				continue
+			
+			if (key[0] == "TITLE"):
+				buff = self.insert (buff, key[2], "<title>%s</title>" % title)
+				continue
+			
+			if (key[0] == "JS"):
+				js = self.create_js (self.config["js"])
+				buff = self.insert (buff, key[2], js)
+				continue
+			
+			if (key[0] == "CSS"):
+				css = self.create_css (self.config["css"])
+				buff = self.insert (buff, key[2], css)
+				continue
+		
+		return buff
 
 if __name__ == '__main__':
 	b_conf = parserconfig.ParserConfig (sys.argv[1])
