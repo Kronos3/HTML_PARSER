@@ -44,6 +44,14 @@ class Template:
 			raise TypeError ("Argument 'config' is not an instance of ParserConfig")
 		
 		self.config = config
+		self.load_template()
+	
+	def load_template (self):
+		self.template_file = []
+		self.pointers = []
+		self.parsed = []
+		self._vars = {}
+		
 		self.template_file = open(self.config["template"], "r").readlines ()
 		for num,line in enumerate (self.template_file):
 			curr_indent = self.get_indent (line)
@@ -86,9 +94,13 @@ class Template:
 		buff = []
 		for ln in ls:
 			buff.append (" "*indent + ln)
+		if (len(buff) == 1):
+			return buff[0]
 		return buff
 	
 	def get_body (self, file_lines, title):
+		self.load_template()
+		buff = []
 		buff = self.template_file
 		
 		for key in reversed (self.pointers):
@@ -98,15 +110,13 @@ class Template:
 			elif (key[0] == "TITLE"):
 				buff = self.insert (buff, key[2], "%s<title>%s</title>" % (" "*key[3], title))
 			elif (key[0] == "JS"):
-				js = self.create_js (self.config["js"])
-				buff = self.insert (buff, key[2], self.indent (js, key[3]))
+				js = self.indent (self.create_js (self.config["js"]), key[3])
+				buff = self.insert (buff, key[2], js)
 			elif (key[0] == "CSS"):
 				css = self.create_css (self.config["css"])
 				buff = self.insert (buff, key[2], self.indent (css, key[3]))
 			else:
-				out_f = parser.Parser (self.config, self.config[key[0]]).out_file
-				buff = self.insert (buff, key[2], self.indent (out_f, key[3]))
-		
+				buff = self.insert (buff, key[2], self.indent (parser.Parser (self.config, self.config[key[0]]).out_file, key[3]))
 		return buff
 
 if __name__ == '__main__':

@@ -23,13 +23,12 @@
 #  
 
 import parser, parserconfig, template
-import sys
+import sys, os
 
 class HtmlParser:
 	
 	template   = None
 	config     = None
-	body_out   = []
 	parsed     = []
 	
 	def __init__ (self, config):
@@ -52,7 +51,7 @@ class HtmlParser:
 		
 	
 	def write (self, name, ls):
-		open (name, "w+").truncate()
+		os.system ("echo \"\n\" > %s" % name)
 		b_file = open (name, "w+")
 		for line in ls:
 			b_file.write (line.replace("\n", "") + "\n")

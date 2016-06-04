@@ -38,8 +38,7 @@ class Parser:
 		self.in_file = in_file
 		self.config  = config
 		self.out_file = []
-		in_file = ""
-		
+		file_b = []
 		
 		file_b = open(self.in_file, "r").readlines()
 		
