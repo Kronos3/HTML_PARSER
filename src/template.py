@@ -82,28 +82,36 @@ class Template:
 			out.append ("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" />" % f)
 		return out
 	
+	def indent (self, ls, indent):
+		buff = []
+		for ln in ls:
+			buff.append (" "*indent + ln)
+		return buff
+	
 	def get_body (self, file_lines, title):
 		buff = self.template_file
 		
 		for key in reversed (self.pointers):
 			
 			if (key[0] == "BODY"):
-				buff = self.insert (buff, key[2], file_lines)
+				buff = self.insert (buff, key[2], self.indent (file_lines, key[3]))
 				continue
 			
 			if (key[0] == "TITLE"):
-				buff = self.insert (buff, key[2], "<title>%s</title>" % title)
+				buff = self.insert (buff, key[2], "%s<title>%s</title>" % (" "*key[3], title))
 				continue
 			
 			if (key[0] == "JS"):
 				js = self.create_js (self.config["js"])
-				buff = self.insert (buff, key[2], js)
+				buff = self.insert (buff, key[2], self.indent (js, key[3]))
 				continue
 			
 			if (key[0] == "CSS"):
 				css = self.create_css (self.config["css"])
-				buff = self.insert (buff, key[2], css)
+				buff = self.insert (buff, key[2], self.indent (css, key[3]))
 				continue
+			
+			buff = self.insert (buff, key[2], self.indent (parser.Parser (self.config, self.config[key[0]]).out_file, key[3]))
 		
 		return buff
 

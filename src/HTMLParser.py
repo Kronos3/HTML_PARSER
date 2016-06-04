@@ -54,7 +54,7 @@ class HtmlParser:
 		b_file = open (name, "w")
 		
 		for line in ls:
-			b_file.write (line + "\n")
+			b_file.write (line.replace("\n", "") + "\n")
 		
 		b_file.close()
 
