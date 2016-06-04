@@ -38,6 +38,8 @@ DIR = os.getcwd ( )
 os.chdir ( os.path.dirname ( os.path.realpath ( __file__ ) ) )
 import filetab, filemanager, builderset, project, configitem, configfile
 
+import HTMLParser
+
 class main:
 	
 	template = ""
@@ -171,24 +173,12 @@ def open_file_recent ( dialogue ):
 
 def write ( button ):
 	print ("Writing...")
-	if (platform.system() == "Windows"):
-		cmd = ".\\\"src/parser.exe\" -c=%s" % MAIN.config
-	else:
-		cmd = "src/parser -c=%s" % MAIN.config
-	os.system(cmd)
-	print (cmd)
+	os.system ("python3 HTMLParser.py %s" % MAIN.config)
 	MAIN.project.add_log ( "Wrote project to config: %s" % MAIN.config )
 	
 def make_desk ( button ):
 	os.system ( "cd %s && /usr/bin/make desktop" % MAIN.dir )
 	MAIN.project.add_log ( "Wrote .desktop file" )
-
-def make ( button ):
-	if (platform.system() == "Windows"):
-		os.system ( "cd %s/src && /usr/bin/make -f MakefileWin" % MAIN.dir )
-	else:
-		os.system ( "cd %s && /usr/bin/make" % MAIN.dir )
-	MAIN.project.add_log ( "Compiled and build HTML_PARSER C++ Source Code" )
 
 def write_conf ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).show_all ( )
@@ -279,7 +269,6 @@ main_handlers = {
 "open_file_recent": open_file_recent,
 "write": write,
 "make_desk": make_desk,
-"make": make,
 "write_conf": write_conf,
 "close_file_new": close_file_new,
 "open_file_new": open_file_new,

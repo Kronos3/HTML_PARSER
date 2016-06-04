@@ -47,12 +47,13 @@ class HtmlParser:
 		self.template = template.Template (self.config)
 		
 		for num, _file in enumerate (self.parsed):
-			self.write (self.config ["output_files"][num], self.template.get_body (_file, self.config["title"][num]))
+			title = self.config["title"][num]
+			self.write (self.config ["output_files"][num], self.template.get_body (_file, title))
 		
 	
 	def write (self, name, ls):
-		b_file = open (name, "w")
-		
+		open (name, "w+").truncate()
+		b_file = open (name, "w+")
 		for line in ls:
 			b_file.write (line.replace("\n", "") + "\n")
 		

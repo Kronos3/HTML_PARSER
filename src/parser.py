@@ -37,10 +37,17 @@ class Parser:
 		
 		self.in_file = in_file
 		self.config  = config
+		self.out_file = []
+		in_file = ""
 		
-		file_b = open(in_file, "r").readlines()
+		
+		file_b = open(self.in_file, "r").readlines()
 		
 		for num, line in enumerate (file_b):
+			if (line.strip() [0:2] == "<!"):
+				self.out_file.append (line)
+				continue
+			
 			buff_line = line.replace ("\n", "")
 			
 			get_esc_start =  self.get_iters (buff_line, self.config["start_esc"])
@@ -51,7 +58,7 @@ class Parser:
 			for esc in esc_strs:
 				indent = self.get_indent(buff_line)
 				buff_line =  self.parse (buff_line)
-				self.out_file.append (buff_line)
+			self.out_file.append (buff_line)
 	
 	def get_indent (self, string):
 		for num, x in enumerate (string):

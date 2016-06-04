@@ -95,23 +95,17 @@ class Template:
 			
 			if (key[0] == "BODY"):
 				buff = self.insert (buff, key[2], self.indent (file_lines, key[3]))
-				continue
-			
-			if (key[0] == "TITLE"):
+			elif (key[0] == "TITLE"):
 				buff = self.insert (buff, key[2], "%s<title>%s</title>" % (" "*key[3], title))
-				continue
-			
-			if (key[0] == "JS"):
+			elif (key[0] == "JS"):
 				js = self.create_js (self.config["js"])
 				buff = self.insert (buff, key[2], self.indent (js, key[3]))
-				continue
-			
-			if (key[0] == "CSS"):
+			elif (key[0] == "CSS"):
 				css = self.create_css (self.config["css"])
 				buff = self.insert (buff, key[2], self.indent (css, key[3]))
-				continue
-			
-			buff = self.insert (buff, key[2], self.indent (parser.Parser (self.config, self.config[key[0]]).out_file, key[3]))
+			else:
+				out_f = parser.Parser (self.config, self.config[key[0]]).out_file
+				buff = self.insert (buff, key[2], self.indent (out_f, key[3]))
 		
 		return buff
 
