@@ -40,7 +40,7 @@ class Parser:
 		self.out_file = []
 		file_b = []
 		
-		file_b = open(self.in_file, "r").readlines()
+		file_b = open(self.in_file, "r", encoding="utf-8").readlines()
 		
 		for num, line in enumerate (file_b):
 			if (line.strip() [0:2] == "<!"):

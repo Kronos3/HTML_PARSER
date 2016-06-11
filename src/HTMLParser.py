@@ -52,7 +52,7 @@ class HtmlParser:
 	
 	def write (self, name, ls):
 		os.system ("echo \"\n\" > %s" % name)
-		b_file = open (name, "w+")
+		b_file = open (name, "w+", encoding="utf-8")
 		for line in ls:
 			b_file.write (line.replace("\n", "") + "\n")
 		
