@@ -1,4 +1,5 @@
 #!/usr/bin/env xdg-open
+
 [Desktop Entry]
 Type=Application
 Version=3.1
@@ -8,4 +9,4 @@ Exec=bash -c 'cd /home/atuser/git/HTML_PARSER/ && ./src/html_parser.py >> html_p
 Icon=/home/atuser/git/HTML_PARSER/src/icon.png
 Terminal=false
 Categories=Languages;C++;Python
-Name[en_US]=HTML\ Parser
+Name[en_US]=HTML Parser

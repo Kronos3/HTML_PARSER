@@ -25,6 +25,7 @@
 
 import os, sys
 import platform
+import markdown
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -246,6 +247,23 @@ def save_conf_dia ( button ):
 	curr_file.close()
 	close_conf_dia ( button )
 
+def _markdown (button):
+	MAIN.project.builders ["main.ui"].get_object ("save_markdown").show_all ()
+
+def write_markdown (button):
+	_from = MAIN.project.files.get_page ().file_name
+	_to   = MAIN.project.builders ["main.ui"].get_object ("save_markdown").get_filename ()
+	input_file = open (_from, mode="r", encoding="utf-8")
+	text = input_file.read ()
+	html = markdown.markdown (text)
+	output_file = open(_to, mode="w+", encoding="utf-8")
+	output_file.truncate ()
+	output_file.write (html)
+	close_markdown (button)
+
+def close_markdown (button):
+	MAIN.project.builders ["main.ui"].get_object ("save_markdown").hide ()
+
 main_handlers = {
 "exit": Gtk.main_quit,
 "new_page": new_page,
@@ -284,6 +302,9 @@ main_handlers = {
 "add_var_sig": add_var_sig,
 "close_conf_dia": close_conf_dia,
 "save_conf_dia": save_conf_dia,
+"markdown": _markdown,
+"save_markdown": write_markdown,
+"close_markdown": close_markdown
 }
 
 global MAIN
