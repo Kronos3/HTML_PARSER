@@ -257,7 +257,7 @@ def __save_conf (file_name):
 	
 	MAIN.config = MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( )
 	curr_file.close()
-	close_conf_dia ( button )
+	close_conf_dia ( None )
 
 def _markdown (button):
 	MAIN.project.builders ["main.ui"].get_object ("save_markdown").show_all ()
