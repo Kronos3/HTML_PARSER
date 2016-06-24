@@ -181,7 +181,7 @@ class Config:
 		model, treeiter = self.treeview.get_selection ( ).get_selected ( )
 		
 		self.var_dict.pop ( model [ treeiter ] [ 0 ], None )
-		del self.var_list [ self.var_list.index ( model [ treeiter ] [ 0 ] ) ]
+		self.var_list.pop ( self.var_list.index ( model [ treeiter ] [ 0 ] ) )
 		self.var_store.remove ( treeiter )
 	
 	def get_conf_out ( self ):
