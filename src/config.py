@@ -202,5 +202,6 @@ class Config:
 			buff = self.var_dict [ x ]
 			if ( isinstance ( self.var_dict [ x ], list ) ):
 				buff = ",".join ( self.var_dict [ x ] )
+				buff += ","
 			out_buff.append ( x + " = " + buff )
 		return out_buff
