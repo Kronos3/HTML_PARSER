@@ -164,6 +164,7 @@ def save_as ( button ):
 	file_buff = open ( new_file, "w+" )
 	buff = MAIN.project.files.get_buff ( )
 	file_buff.write ( buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
+	file_buff.close ()
 	
 	current = MAIN.project.files.notebook.get_current_page ()
 	
