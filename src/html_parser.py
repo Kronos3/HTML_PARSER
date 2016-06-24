@@ -265,6 +265,7 @@ def write_markdown (button):
 	output_file = open(_to, mode="w+", encoding="utf-8")
 	output_file.truncate ()
 	output_file.write (html)
+	output_file.close ()
 	
 	open_file (_to)
 	
