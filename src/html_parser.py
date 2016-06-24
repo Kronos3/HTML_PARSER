@@ -182,9 +182,11 @@ def open_file_recent ( dialogue ):
 
 def write ( button ):
 	print ("Writing...")
-	os.system ("python3 HTMLParser.py %s" % MAIN.config)
+	__save_conf ("______buff.cfg")
+	os.system ("python3 HTMLParser.py ______buff.cfg")
 	MAIN.project.add_log ( "Wrote project to config: %s" % MAIN.config )
-	
+	os.remove ("______buff.cfg")
+
 def make_desk ( button ):
 	os.system ( "cd %s && /usr/bin/make desktop" % MAIN.dir )
 	MAIN.project.add_log ( "Wrote .desktop file" )
@@ -246,8 +248,10 @@ def close_conf_dia ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).hide ( )
 
 def save_conf_dia ( button ):
-	curr_file = open ( MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( ), "w+" )
+	file_name = MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( )
 	
+def __save_conf (file_name):
+	curr_file =  open ( file_name, "w+" )
 	for line in MAIN.project.__config__.get_conf_out ( ):
 		curr_file.write ( line + "\n" )
 	
