@@ -115,6 +115,8 @@ class Config:
 				self.var_dict [ var ] = val.split ( "," )
 		
 		for var in self.list_vars:
+			if not var:
+				continue
 			buff = self.var_dict [ var ]
 			exec ( "self.%s.set_notebook ( self.notebook )"  % var.replace ( "_files", "" ) )
 			exec ( "self.%s.set_dialogue ( self.open_dialogue )"  % var.replace ( "_files", "" ) )
