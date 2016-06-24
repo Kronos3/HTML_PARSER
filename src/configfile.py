@@ -80,4 +80,5 @@ class ConfigFile ( Gtk.Box ):
 		self.notebook.open ( self.full_path )
 	
 	def __destroy ( self, button ):
+		self.emit ( "remove_config", self )
 		self.destroy ( )

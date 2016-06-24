@@ -52,7 +52,10 @@ class main:
 	def __init__ ( self, _dir="gui", start_type="input" ):
 		self.dir = DIR
 		GObject.type_register ( configitem.ConfigItem )
+		GObject.type_register ( configfile.ConfigFile )
 		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
+		GObject.signal_new ( "remove_item", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configfile.ConfigFile, ) )
+		GObject.signal_new ( "remove_config", configfile.ConfigFile, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configfile.ConfigFile, ) )
 		self.project = project.Project ( _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( self.project.files, "parser.cfg" )
 		self.config = "parser.cfg"

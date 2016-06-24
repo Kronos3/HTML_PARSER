@@ -96,6 +96,9 @@ class Config:
 		self.input.connect ( "new_config", self.get_new )
 		self.output.connect ( "new_config", self.get_new )
 		
+		self.input.connect ( "remove_item", self.get_remove )
+		self.output.connect ( "remove_item", self.get_remove )
+		
 		for l in self.__file_lines:
 			if l [ 0 ] == "#" or l == "" or l == "\n":
 				continue
@@ -122,6 +125,12 @@ class Config:
 		for var in self.var_list:
 			if ( not isinstance ( self.var_dict [ var ], list ) ):
 				self.add_var ( var )
+	
+	def get_remove (self, buff_cfg, buff_item):
+		curr = "output"
+		if buff_cfg == self.input:
+			curr = "input"
+		self.var_dict [ curr + "_files" ].pop ( self.var_dict [ curr + "_files" ].index (buff_item.full_path))
 	
 	def get_path ( self, _in ):
 		if self.dir [ -1 ] == "/":
@@ -182,6 +191,7 @@ class Config:
 		
 		self.var_dict.pop ( model [ treeiter ] [ 0 ], None )
 		self.var_list.pop ( self.var_list.index ( model [ treeiter ] [ 0 ] ) )
+		print (self.var_list)
 		self.var_store.remove ( treeiter )
 	
 	def get_conf_out ( self ):

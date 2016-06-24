@@ -67,6 +67,7 @@ class ConfigItem ( Gtk.Box ):
 	
 	def add_item ( self, file_path, __open = True ):
 		buff_item = configfile.ConfigFile ( file_path, self.notebook, __open )
+		buff_item.connect ("remove_config", self.remove_item)
 		self.items.insert  ( 0, buff_item )
 		self.pack_start ( buff_item, False, False, 5 )
 	
@@ -75,6 +76,9 @@ class ConfigItem ( Gtk.Box ):
 			if i == item:
 				return items.index ( i )
 		return None
+	
+	def remove_item (self, _another_self, buff_item):
+		self.emit ("remove_item", buff_item)
 	
 	def open_dialogue ( self, button ):
 		self.emit ( "new_config", self )
