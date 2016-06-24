@@ -96,6 +96,9 @@ class Config:
 		self.input.connect ( "new_config", self.get_new )
 		self.output.connect ( "new_config", self.get_new )
 		
+		self.input.connect ( "remove_item", self.get_remove )
+		self.output.connect ( "remove_item", self.get_remove )
+		
 		for l in self.__file_lines:
 			if l [ 0 ] == "#" or l == "" or l == "\n":
 				continue
@@ -112,6 +115,8 @@ class Config:
 				self.var_dict [ var ] = val.split ( "," )
 		
 		for var in self.list_vars:
+			if not var:
+				continue
 			buff = self.var_dict [ var ]
 			exec ( "self.%s.set_notebook ( self.notebook )"  % var.replace ( "_files", "" ) )
 			exec ( "self.%s.set_dialogue ( self.open_dialogue )"  % var.replace ( "_files", "" ) )
@@ -122,6 +127,12 @@ class Config:
 		for var in self.var_list:
 			if ( not isinstance ( self.var_dict [ var ], list ) ):
 				self.add_var ( var )
+	
+	def get_remove (self, buff_cfg, buff_item):
+		curr = "output"
+		if buff_cfg == self.input:
+			curr = "input"
+		self.var_dict [ curr + "_files" ].pop ( self.var_dict [ curr + "_files" ].index (buff_item.full_path))
 	
 	def get_path ( self, _in ):
 		if self.dir [ -1 ] == "/":
@@ -135,6 +146,8 @@ class Config:
 			self.current = "output"
 	
 	def add ( self, __files ):
+		if platform.system () == "Windows":
+			__files[0] = __files [0][1:]
 		if ( self.current == "input" ):
 			self.input.add_items ( __files, remove=False )
 			self.var_dict ["input_files"].append (__files[0])
@@ -181,7 +194,8 @@ class Config:
 		model, treeiter = self.treeview.get_selection ( ).get_selected ( )
 		
 		self.var_dict.pop ( model [ treeiter ] [ 0 ], None )
-		del self.var_list [ self.var_list.index ( model [ treeiter ] [ 0 ] ) ]
+		self.var_list.pop ( self.var_list.index ( model [ treeiter ] [ 0 ] ) )
+		print (self.var_list)
 		self.var_store.remove ( treeiter )
 	
 	def get_conf_out ( self ):
@@ -190,5 +204,6 @@ class Config:
 			buff = self.var_dict [ x ]
 			if ( isinstance ( self.var_dict [ x ], list ) ):
 				buff = ",".join ( self.var_dict [ x ] )
+				buff += ","
 			out_buff.append ( x + " = " + buff )
 		return out_buff

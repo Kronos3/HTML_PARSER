@@ -25,6 +25,7 @@
 
 import os, sys
 import platform
+import markdown
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -38,6 +39,8 @@ DIR = os.getcwd ( )
 os.chdir ( os.path.dirname ( os.path.realpath ( __file__ ) ) )
 import filetab, filemanager, builderset, project, configitem, configfile
 
+import HTMLParser
+
 class main:
 	
 	template = ""
@@ -46,24 +49,16 @@ class main:
 	other = []
 	dir = None
 	
-	def __init__ ( self, start_file="src/parser.cpp", _dir="src/gui", start_type="input" ):
+	def __init__ ( self, _dir="gui", start_type="input" ):
 		self.dir = DIR
 		GObject.type_register ( configitem.ConfigItem )
+		GObject.type_register ( configfile.ConfigFile )
 		GObject.signal_new ( "new_config", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configitem.ConfigItem, ) )
-		start_file = get_dir ( self.dir + "/" + start_file )
-		self.project = project.Project ( start_file, _dir, start_type, main_handlers, self.dir )
+		GObject.signal_new ( "remove_item", configitem.ConfigItem, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configfile.ConfigFile, ) )
+		GObject.signal_new ( "remove_config", configfile.ConfigFile, GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ( configfile.ConfigFile, ) )
+		self.project = project.Project ( _dir, start_type, main_handlers, self.dir )
 		self.project.load_config ( self.project.files, "parser.cfg" )
 		self.config = "parser.cfg"
-		if ( start_type == "input" ):
-			self.pages.append ( start_file )
-		elif ( start_type == "template" ):
-			self.template = start_file
-		elif ( start_type == "config" ):
-			self.config = start_file
-		elif ( start_type == "other" ):
-			self.other.append ( start_file )
-		else:
-			raise ValueError ( "The following is not a valid file type: '%s'" % start_type )
 
 def get_dir ( in_dir ):
 	in_buff = in_dir.split ( "/" )
@@ -172,9 +167,14 @@ def save_as ( button ):
 	file_buff = open ( new_file, "w+" )
 	buff = MAIN.project.files.get_buff ( )
 	file_buff.write ( buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
-	tab = MAIN.project.files.get_page ( )
-	tab.rename ( new_file )
-	save_as_close ( button )
+	file_buff.close ()
+	
+	current = MAIN.project.files.notebook.get_current_page ()
+	
+	MAIN.project.files.close_file ( MAIN.project.files.get_page ().button_gtk, False )
+	MAIN.project.open (new_file, "other")
+	
+	save_as_close (button)
 
 def open_file_recent ( dialogue ):
 	recent = dialogue.get_current_uri ( ).replace ( "file://", "" )
@@ -182,24 +182,14 @@ def open_file_recent ( dialogue ):
 
 def write ( button ):
 	print ("Writing...")
-	if (platform.system() == "Windows"):
-		cmd = ".\\\"src/parser.exe\" -c=%s" % MAIN.config
-	else:
-		cmd = "src/parser -c=%s" % MAIN.config
-	os.system(cmd)
-	print (cmd)
+	__save_conf ("______buff.cfg")
+	os.system ("python3 HTMLParser.py ______buff.cfg")
 	MAIN.project.add_log ( "Wrote project to config: %s" % MAIN.config )
-	
+	os.remove ("______buff.cfg")
+
 def make_desk ( button ):
 	os.system ( "cd %s && /usr/bin/make desktop" % MAIN.dir )
 	MAIN.project.add_log ( "Wrote .desktop file" )
-
-def make ( button ):
-	if (platform.system() == "Windows"):
-		os.system ( "cd %s/src && /usr/bin/make -f MakefileWin" % MAIN.dir )
-	else:
-		os.system ( "cd %s && /usr/bin/make" % MAIN.dir )
-	MAIN.project.add_log ( "Compiled and build HTML_PARSER C++ Source Code" )
 
 def write_conf ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).show_all ( )
@@ -258,14 +248,38 @@ def close_conf_dia ( button ):
 	MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).hide ( )
 
 def save_conf_dia ( button ):
-	curr_file = open ( MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( ), "w+" )
+	file_name = MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( )
 	
+def __save_conf (file_name):
+	curr_file =  open ( file_name, "w+" )
 	for line in MAIN.project.__config__.get_conf_out ( ):
 		curr_file.write ( line + "\n" )
 	
 	MAIN.config = MAIN.project.builders [ "main.ui" ].get_object ( "save_conf" ).get_filename ( )
 	curr_file.close()
-	close_conf_dia ( button )
+	close_conf_dia ( None )
+
+def _markdown (button):
+	MAIN.project.builders ["main.ui"].get_object ("save_markdown").show_all ()
+
+def write_markdown (button):
+	_from = MAIN.project.files.get_page ().file_name
+	_to   = MAIN.project.builders ["main.ui"].get_object ("save_markdown").get_filename ()
+	
+	input_file = open (_from, mode="r", encoding="utf-8")
+	text = input_file.read ()
+	html = markdown.markdown (text)
+	output_file = open(_to, mode="w+", encoding="utf-8")
+	output_file.truncate ()
+	output_file.write (html)
+	output_file.close ()
+	
+	open_file (_to)
+	
+	close_markdown (button)
+
+def close_markdown (button):
+	MAIN.project.builders ["main.ui"].get_object ("save_markdown").hide ()
 
 main_handlers = {
 "exit": Gtk.main_quit,
@@ -290,7 +304,6 @@ main_handlers = {
 "open_file_recent": open_file_recent,
 "write": write,
 "make_desk": make_desk,
-"make": make,
 "write_conf": write_conf,
 "close_file_new": close_file_new,
 "open_file_new": open_file_new,
@@ -306,13 +319,17 @@ main_handlers = {
 "add_var_sig": add_var_sig,
 "close_conf_dia": close_conf_dia,
 "save_conf_dia": save_conf_dia,
+"markdown": _markdown,
+"save_markdown": write_markdown,
+"close_markdown": close_markdown
 }
 
 global MAIN
 args = sys.argv
 if ( len ( args ) == 1 ):
-	 MAIN = main ( )
+	 MAIN = main ()
+	 open_file ("template.py")
 else:
-	MAIN = main ( args [ 1 ] )
-
+	MAIN = main ()
+	open_file (args [ 1 ])
 Gtk.main ( )

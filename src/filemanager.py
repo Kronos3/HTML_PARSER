@@ -36,6 +36,7 @@ import filetab, project, builderset, configitem, configfile
 class FileManager:
 	
 	tabs = []
+	srcs = []
 	
 	clipboard = None
 	
@@ -123,6 +124,9 @@ class FileManager:
 		self.tabs.insert ( 0, tab )
 		
 		SOURCE.set_bottom_margin ( 20 )
+		self.srcs.insert (0, SOURCE)
+		
+		SOURCE.connect ( "move-cursor", self.move)
 		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )
@@ -251,11 +255,17 @@ class FileManager:
 		self.tabs.insert ( 0, tab )
 		
 		SOURCE.set_bottom_margin ( 20 )
+		self.srcs.insert (0, SOURCE)
+		
+		SOURCE.connect ("move-cursor", self.move)
 		
 		self.notebook.prepend_page ( curr_scrolled, tab )
 		self.notebook.show_all ( )
 		self.notebook.set_current_page ( 0 )
 		self.set_reorder ( )
+	
+	def move (self, src, step, count, extend_selection, ):
+		src.get_buffer().emit ("changed")
 	
 	def get_index ( self ):
 		return self.notebook.get_current_page ( )

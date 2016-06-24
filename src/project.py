@@ -48,7 +48,7 @@ class Project:
 	config_file = ""
 	template_file = ""
 	
-	def __init__ ( self, start_doc, _dir, _type, signals, curr_dir ):
+	def __init__ ( self, _dir, _type, signals, curr_dir ):
 		self._dir = _dir
 		
 		GObject.type_register ( GtkSource.View )
@@ -83,8 +83,6 @@ class Project:
 		
 		self.builders [ "main.ui" ].get_object ( "new_tool" )
 		
-		self.open ( start_doc, _type )
-		
 		self.accel_group = Gtk.AccelGroup ( )
 		self.builders [ "main.ui" ].get_object ( "open" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "new_page" ).add_accelerator ( "activate", self.accel_group, ord ( 'n' ), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
@@ -101,7 +99,6 @@ class Project:
 		self.builders [ "main.ui" ].get_object ( "close_all" ).add_accelerator ( "activate", self.accel_group, ord ( 'w' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "open_conf" ).add_accelerator ( "activate", self.accel_group, ord ( 'o' ), Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE )
 		key, mods = Gtk.accelerator_parse ( "F9" )
-		self.builders [ "main.ui" ].get_object ( "make_back" ).add_accelerator ( "activate", self.accel_group, key, mods, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "make_desk" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		self.builders [ "main.ui" ].get_object ( "write_conf" ).add_accelerator ( "activate", self.accel_group, key, Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK | mods, Gtk.AccelFlags.VISIBLE )
 		f5_key, f5_mods = Gtk.accelerator_parse ( "F5" )
