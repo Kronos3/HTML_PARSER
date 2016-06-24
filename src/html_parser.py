@@ -164,9 +164,13 @@ def save_as ( button ):
 	file_buff = open ( new_file, "w+" )
 	buff = MAIN.project.files.get_buff ( )
 	file_buff.write ( buff.get_text ( buff.get_start_iter ( ), buff.get_end_iter ( ), True ) )
-	tab = MAIN.project.files.get_page ( )
-	tab.rename ( new_file )
-	save_as_close ( button )
+	
+	current = MAIN.project.files.notebook.get_current_page ()
+	
+	MAIN.project.files.close_file ( MAIN.project.files.get_page ().button_gtk, False )
+	MAIN.project.open (new_file, "other")
+	
+	save_as_close (button)
 
 def open_file_recent ( dialogue ):
 	recent = dialogue.get_current_uri ( ).replace ( "file://", "" )
