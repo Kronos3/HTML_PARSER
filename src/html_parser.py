@@ -258,12 +258,16 @@ def _markdown (button):
 def write_markdown (button):
 	_from = MAIN.project.files.get_page ().file_name
 	_to   = MAIN.project.builders ["main.ui"].get_object ("save_markdown").get_filename ()
+	
 	input_file = open (_from, mode="r", encoding="utf-8")
 	text = input_file.read ()
 	html = markdown.markdown (text)
 	output_file = open(_to, mode="w+", encoding="utf-8")
 	output_file.truncate ()
 	output_file.write (html)
+	
+	open_file (_to)
+	
 	close_markdown (button)
 
 def close_markdown (button):
