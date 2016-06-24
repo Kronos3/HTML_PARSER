@@ -144,6 +144,8 @@ class Config:
 			self.current = "output"
 	
 	def add ( self, __files ):
+		if platform.system () == "Windows":
+			__files = __files [1:]
 		if ( self.current == "input" ):
 			self.input.add_items ( __files, remove=False )
 			self.var_dict ["input_files"].append (__files[0])
