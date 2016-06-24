@@ -64,6 +64,7 @@ class FileTab ( Gtk.Box ):
 		
 		self.button_gtk.set_image ( self.__image )
 		self.button_gtk.set_image_position ( 2 )
+		self.button_gtk.set_relief (Gtk.ReliefStyle.NONE)
 		self.add ( self.button_gtk )
 		
 		self.set_spacing ( 6 )
