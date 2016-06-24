@@ -58,6 +58,8 @@ class ConfigItem ( Gtk.Box ):
 			self.remove ( self.new_button )
 		
 		for p in paths:
+			if not p:
+				continue
 			self.add_item ( p, __def )
 		
 		if ( __def ):
